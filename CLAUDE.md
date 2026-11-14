@@ -18,7 +18,7 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
   - Zone 1B: Osman Sagar → Bapu Ghat, Ch 0+600 → 12+212, including the Tipu Khan bridge (Ch 10+800).
   - Zone 1A: Himayat Sagar → Bapu Ghat, Ch 1+200 → 9+140, including the Rajendranagar Road / Agriculture University nala area.
   - Today / Compare / Proposed swipe, stretch switcher, 16 stops, sources per stretch.
-- **Georeferenced (15 Nov 2026):** affine fit from the owner's 10 Google Maps points, RMS 12 m. The worst point is cp7 (roundabout, 24 m).
+- **Georeferenced (15 Nov 2026):** affine fit from the owner's 10 Google Maps points, RMS 13 m. The worst point is cp7 (the roundabout, 26 m). The owner re-clicked its centre and it moved only 4 m, so the gap is between the drawing and the imagery, not the click.
 - **MapLibre version** (below) replaces the v2 engine once tested. Satellite turns on when the `ARCGIS_KEY` repo secret is set.
 
 ## MapLibre version
