@@ -112,10 +112,10 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
 .place { font: 650 13px/1.2 var(--f-display); color: #3b4a50; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; pointer-events: none; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 6px #fff; }
 .place.water { color: #1f6f8b; }
 .layer-off { display: none !important; }
-.stage.far .tag, .stage.far .dam, .stage.far .place:not(.far) { display: none; }
-.stage.far .node .txt, .stage.far .iconic .txt { display: none; }
-.stage.far .node { padding: 4px; }
-.stage.far .iconic { padding: 5px 6px; }
+.viewer.far .tag, .viewer.far .dam, .viewer.far .place:not(.far) { display: none; }
+.viewer.far .node .txt, .viewer.far .iconic .txt { display: none; }
+.viewer.far .node { padding: 4px; }
+.viewer.far .iconic { padding: 5px 6px; }
 
 .ctrls { position: absolute; right: max(12px, env(safe-area-inset-right, 0px)); top: 12px; display: grid; gap: 6px; z-index: 5; }
 .ctrls button { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font: 600 18px/1 var(--f-body); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.12); display: grid; place-items: center; }
@@ -226,12 +226,12 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
 .srclist { display: grid; gap: 6px; }
 .srclist ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
 .place.zone { font-size: 18px; color: #1f6f8b; letter-spacing: .12em; }
-.stage.vfar .pin { width: 26px; height: 26px; font-size: 12px; }
-.stage.vfar .pin[aria-current="true"] { width: 32px; height: 32px; font-size: 14px; }
-.stage.vfar .node .txt { display: none; }
-.stage.vfar .node { padding: 3px; }
-.stage.vfar .iconic { display: none; }
-.stage.vfar .place:not(.zone):not(.water) { display: none; }
+.viewer.vfar .pin { width: 26px; height: 26px; font-size: 12px; }
+.viewer.vfar .pin[aria-current="true"] { width: 32px; height: 32px; font-size: 14px; }
+.viewer.vfar .node .txt { display: none; }
+.viewer.vfar .node { padding: 3px; }
+.viewer.vfar .iconic { display: none; }
+.viewer.vfar .place:not(.zone):not(.water) { display: none; }
 .basebar { display: none; }
 .has-sat .basebar { display: inline-flex; }
 .layer { isolation: isolate; }
@@ -249,9 +249,22 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   .stretchbar button { padding: 6px 7px; }
   .stretchbar button span { font-size: 12px; }
 }
+/* MapLibre engine */
+.viewer { touch-action: none; cursor: auto; }
+.viewer .mapA, .viewer .mapB { position: absolute; inset: 0; }
+.viewer .mapA { pointer-events: none; }
+.viewer .mapB .maplibregl-canvas { transition: opacity .3s; }
+.viewer[data-mode="today"] .mapB .maplibregl-canvas { opacity: 0; }
+.viewer .maplibregl-marker { will-change: transform; }
+.viewer .maplibregl-ctrl-attrib { font: 500 10.5px/1.3 var(--f-body); }
+.nomap-msg { display: none; position: absolute; inset: auto 16px 40% 16px; text-align: center; color: var(--muted); font: 500 14px/1.4 var(--f-body); }
+.viewer.nomap .nomap-msg { display: block; }
+@media (prefers-reduced-motion: reduce) { .viewer .mapB .maplibregl-canvas { transition: none; } }
 </style>
 </head>
 <body>
+<link rel="stylesheet" href="vendor/maplibre-gl-5.6.0/maplibre-gl.css">
+<script id="mljs" async src="vendor/maplibre-gl-5.6.0/maplibre-gl.js"></script>
 <header class="top">
   <div class="brand">
     <div class="eyebrow">Musi Riverfront · Phase 1, Zone 1A and 1B · read from the tender drawings</div>
@@ -273,18 +286,14 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
 
 <main class="app">
   <div class="mapwrap">
-    <div class="viewer" id="viewer" data-mode="compare" data-base="plan" tabindex="0" aria-label="Map of the riverfront. Drag to pan, scroll or pinch to zoom.">
-      <div class="stage" id="stage">
-        <div class="layer" id="satLayer"></div>
-        <div class="layer" id="todayLayer" role="img" aria-label="Survey base map today: buildings, roads, nalas, the ORR and the approximate river course"></div>
-        <div class="layer" id="propLayer" role="img" aria-label="Master plan of the proposed riverfront: river channel, roads, parks, bridges and parking"></div>
-        <div class="ov" id="ov"></div>
-      </div>
+    <div class="viewer" id="viewer" data-mode="compare" data-base="plan" aria-label="Map of the riverfront. Drag to pan, scroll or pinch to zoom.">
+      <div class="mapA" id="mapA" aria-hidden="true"></div>
+      <div class="mapB" id="mapB"></div>
+      <p class="nomap-msg">The map could not load. The tour on the right still works.</p>
     </div>
     <div class="disc" role="note"><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition.</div>
     <div class="swipe" id="swipe"><span class="lbl l" id="lblL">Today</span><span class="lbl r">Proposed</span><button type="button" id="swipeBtn" aria-label="Drag to compare today and proposed"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></button></div>
     <div class="modebadge" id="badge">Compare · drag the handle</div>
-    <div class="attrib" id="attrib"></div>
     <div class="ctrls">
       <button type="button" id="zin" aria-label="Zoom in">+</button>
       <button type="button" id="zout" aria-label="Zoom out">−</button>
@@ -327,129 +336,25 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   var K = 2.5, NATIVE_W = 13925, NATIVE_H = 10500, FRAME = [0, 0, 5570, 4200];
   var LAYER_OF = { node: "nodes", iconic: "bridges", bridge: "bridges", foot: "bridges", park: "parks", dam: "water", place: "places" };
 
-  var viewer = document.getElementById("viewer"), stage = document.getElementById("stage"), ov = document.getElementById("ov");
-  var propLayerEl = document.getElementById("propLayer"), swipe = document.getElementById("swipe"), badge = document.getElementById("badge");
-  var st = { s: 0.05, x: 0, y: 0 }, mode = "compare", base = "plan", swipeFrac = 0.5, current = 0, activeStretch = "w";
+  var viewer = document.getElementById("viewer"), swipe = document.getElementById("swipe"), badge = document.getElementById("badge");
+  var mode = "compare", base = "plan", swipeFrac = 0.5, current = 0, activeStretch = "w";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function vw() { return viewer.clientWidth; } function vh() { return viewer.clientHeight; }
+  function vw() { return viewer.clientWidth; }
 
-  // ----- tile layers (WebP tiles packed in 8x8 bundles) -----
-  function TileLayer(name, host) {
-    this.name = name; this.host = host; this.meta = null; this.bundles = new Map(); this.imgs = new Map(); this.order = [];
-    var self = this;
-    this.ready = fetch("tiles/" + name + "/meta.json").then(function (r) { return r.json(); }).then(function (m) {
-      self.meta = m; self.has = {}; Object.keys(m.bundles).forEach(function (z) { self.has[z] = new Set(m.bundles[z]); });
-      self.baseZ = Math.min(2, m.maxZoom); self.loadAll(self.baseZ, true);
-    }).catch(function () {});
+  // ----- georeference: frame points (master plan sheet 1 minus 30,420) -> lng/lat -----
+  var G = null, TJ = null, CFG = null, mapA = null, mapB = null, pendingBox = null;
+  function ptToLL(x, y) { var T = G.T; return [G.lng0 + (T[0] * x + T[1] * y + T[2]) / G.kx, G.lat0 + (T[3] * x + T[4] * y + T[5]) / G.ky]; }
+  function boxBounds(b) {
+    var c = [ptToLL(b[0], b[1]), ptToLL(b[2], b[1]), ptToLL(b[2], b[3]), ptToLL(b[0], b[3])];
+    var xs = c.map(function (p) { return p[0]; }), ys = c.map(function (p) { return p[1]; });
+    return [[Math.min.apply(null, xs), Math.min.apply(null, ys)], [Math.max.apply(null, xs), Math.max.apply(null, ys)]];
   }
-  TileLayer.prototype.bundle = function (z, bx, by) {
-    var key = z + "/" + bx + "_" + by, self = this;
-    if (!this.has[z] || !this.has[z].has(bx + "_" + by)) return Promise.resolve(null);
-    if (this.bundles.has(key)) return this.bundles.get(key);
-    var p = fetch("tiles/" + this.name + "/z" + z + "_" + bx + "_" + by + ".json").then(function (r) { return r.json(); }).catch(function () { self.bundles.delete(key); return null; });
-    this.bundles.set(key, p); this.order.push(key);
-    if (this.order.length > 48) { var old = this.order.shift(); this.bundles.delete(old); }
-    return p;
-  };
-  TileLayer.prototype.place = function (z, tx, ty, isBase) {
-    var key = z + "/" + tx + "_" + ty, self = this, T = this.meta.tile, B = this.meta.bundle;
-    if (this.imgs.has(key)) return;
-    this.imgs.set(key, null);
-    this.bundle(z, Math.floor(tx / B), Math.floor(ty / B)).then(function (b) {
-      if (!b || !self.imgs.has(key)) return;
-      var data = b[tx + "_" + ty]; if (!data) return;
-      var f = Math.pow(2, self.meta.maxZoom - z), img = new Image();
-      img.decoding = "async"; img.alt = ""; img.className = isBase ? "base" : "";
-      img.style.left = (tx * T * f) + "px"; img.style.top = (ty * T * f) + "px";
-      img.style.width = (T * f + (isBase ? 0 : 0.5)) + "px"; img.style.height = (T * f + (isBase ? 0 : 0.5)) + "px";
-      img.style.zIndex = isBase ? 0 : z;
-      img.src = "data:image/webp;base64," + data;
-      self.host.appendChild(img); self.imgs.set(key, img);
-    });
-  };
-  TileLayer.prototype.loadAll = function (z, isBase) {
-    var T = this.meta.tile, f = Math.pow(2, this.meta.maxZoom - z);
-    var nx = Math.ceil(this.meta.width / f / T), ny = Math.ceil(this.meta.height / f / T);
-    for (var y = 0; y < ny; y++) for (var x = 0; x < nx; x++) this.place(z, x, y, isBase);
-  };
-  TileLayer.prototype.update = function (z, rect) {
-    if (!this.meta) return;
-    var T = this.meta.tile, f = Math.pow(2, this.meta.maxZoom - z), span = T * f, want = new Set(), self = this;
-    if (z > this.baseZ) {
-      var x0 = Math.max(0, Math.floor(rect[0] / span)), y0 = Math.max(0, Math.floor(rect[1] / span));
-      var x1 = Math.min(Math.ceil(this.meta.width / span) - 1, Math.floor(rect[2] / span)), y1 = Math.min(Math.ceil(this.meta.height / span) - 1, Math.floor(rect[3] / span));
-      for (var y = y0; y <= y1; y++) for (var x = x0; x <= x1; x++) { want.add(z + "/" + x + "_" + y); this.place(z, x, y, false); }
-    }
-    this.imgs.forEach(function (img, key) {
-      if (key.indexOf(self.baseZ + "/") === 0 || want.has(key)) return;
-      if (img) img.remove(); self.imgs.delete(key);
-    });
-  };
-  var layers = { today: new TileLayer("today", document.getElementById("todayLayer")), proposed: new TileLayer("proposed", propLayerEl), plan: null };
-  Promise.all([layers.today.ready, layers.proposed.ready]).then(function () { render(); });
+  function mPerPx(z) { return 156543.03 * Math.cos(G.lat0 * Math.PI / 180) / Math.pow(2, z); }
 
-  // ----- satellite (only when config.json supplies imagery and a georeference) -----
-  var SAT = null, satHost = document.getElementById("satLayer"), satImgs = new Map();
-  function geoToPt(lat, lng) {
-    var g = SAT.geo, E = (lng - g.lng0) * g.kx, N = (lat - g.lat0) * g.ky, T = g.T;
-    var det = T[0] * T[4] - T[1] * T[3], ex = E - T[2], ny = N - T[5];
-    return [(T[4] * ex - T[1] * ny) / det, (-T[3] * ex + T[0] * ny) / det];
-  }
-  function ptToGeo(x, y) { var g = SAT.geo, T = g.T; return [g.lat0 + (T[3] * x + T[4] * y + T[5]) / g.ky, g.lng0 + (T[0] * x + T[1] * y + T[2]) / g.kx]; }
-  function tile2lng(x, z) { return x / Math.pow(2, z) * 360 - 180; }
-  function tile2lat(y, z) { var n = Math.PI - 2 * Math.PI * y / Math.pow(2, z); return 180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))); }
-  function lng2tile(l, z) { return (l + 180) / 360 * Math.pow(2, z); }
-  function lat2tile(l, z) { var r = l * Math.PI / 180; return (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * Math.pow(2, z); }
-  function updateSat(rect) {
-    if (!SAT || base !== "sat") return;
-    var mPerPx = SAT.mPerPt / K / st.s / Math.min(window.devicePixelRatio || 1, 2);
-    var lat = SAT.geo.lat0, z = Math.round(Math.log2(156543.03 * Math.cos(lat * Math.PI / 180) / mPerPx));
-    z = Math.max(10, Math.min(SAT.maxZoom || 19, z));
-    var c = [ptToGeo(rect[0] / K, rect[1] / K), ptToGeo(rect[2] / K, rect[1] / K), ptToGeo(rect[0] / K, rect[3] / K), ptToGeo(rect[2] / K, rect[3] / K)];
-    var xs = c.map(function (p) { return lng2tile(p[1], z); }), ys = c.map(function (p) { return lat2tile(p[0], z); });
-    var x0 = Math.floor(Math.min.apply(null, xs)), x1 = Math.floor(Math.max.apply(null, xs)), y0 = Math.floor(Math.min.apply(null, ys)), y1 = Math.floor(Math.max.apply(null, ys));
-    if ((x1 - x0 + 1) * (y1 - y0 + 1) > 80) return;
-    var want = new Set();
-    for (var ty = y0; ty <= y1; ty++) for (var tx = x0; tx <= x1; tx++) {
-      var key = z + "/" + tx + "/" + ty; want.add(key);
-      if (satImgs.has(key)) continue;
-      var tl = geoToPt(tile2lat(ty, z), tile2lng(tx, z)), tr = geoToPt(tile2lat(ty, z), tile2lng(tx + 1, z)), bl = geoToPt(tile2lat(ty + 1, z), tile2lng(tx, z));
-      var img = new Image(); img.alt = ""; img.crossOrigin = "anonymous"; img.decoding = "async";
-      img.style.left = "0px"; img.style.top = "0px"; img.style.width = "256px"; img.style.height = "256px"; img.style.transformOrigin = "0 0";
-      img.style.transform = "matrix(" + [(tr[0] - tl[0]) * K / 256, (tr[1] - tl[1]) * K / 256, (bl[0] - tl[0]) * K / 256, (bl[1] - tl[1]) * K / 256, tl[0] * K, tl[1] * K].map(function (v) { return v.toFixed(4); }).join(",") + ") scale(1.004)";
-      img.src = SAT.url.replace("{z}", z).replace("{x}", tx).replace("{y}", ty);
-      satHost.appendChild(img); satImgs.set(key, img);
-    }
-    satImgs.forEach(function (img, key) { if (!want.has(key)) { img.remove(); satImgs.delete(key); } });
-  }
-  fetch("config.json").then(function (r) { return r.ok ? r.json() : null; }).then(function (cfg) {
-    if (!cfg || !cfg.satellite || !cfg.satellite.url || !cfg.georef) return;
-    var g = cfg.georef;
-    SAT = { url: cfg.satellite.url, maxZoom: cfg.satellite.maxZoom, geo: g, mPerPt: Math.hypot(g.T[0], g.T[3]) };
-    document.getElementById("attrib").textContent = cfg.satellite.attribution || "";
-    layers.plan = new TileLayer("plan", document.createElement("div"));
-    document.querySelector(".top").classList.add("has-sat");
-    var s = location.hash === "#sat" ? "sat" : null; if (s) setBase(s);
-  }).catch(function () {});
-  function setBase(b) {
-    if (b === "sat" && !SAT) return;
-    base = b; viewer.dataset.base = b;
-    document.querySelectorAll(".basebar button").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.b === b)); });
-    // In satellite view the plan is drawn from transparent tiles over the imagery.
-    propLayerEl.textContent = ""; var L = b === "sat" ? layers.plan : layers.proposed;
-    if (b === "sat") { layers.plan.host = propLayerEl; layers.plan.imgs = new Map(); if (layers.plan.meta) layers.plan.loadAll(layers.plan.baseZ, true); else layers.plan.ready.then(function () { render(); }); }
-    else { layers.proposed.imgs = new Map(); layers.proposed.loadAll(layers.proposed.baseZ, true); }
-    propLayerEl.style.opacity = b === "sat" ? (document.getElementById("opacity").value / 100) : "";
-    document.getElementById("lblL").textContent = b === "sat" ? "Satellite" : "Today";
-    setMode(mode); render();
-  }
-  document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { setBase(x.dataset.b); }); });
-  document.getElementById("opacity").addEventListener("input", function (e) { if (base === "sat") propLayerEl.style.opacity = e.target.value / 100; });
-
-  // ----- overlay markers -----
-  var layerEls = { stops: [], nodes: [], bridges: [], parks: [], water: [], places: [] };
-  function place(e, x, y) { e.style.left = (x * K) + "px"; e.style.top = (y * K) + "px"; ov.appendChild(e); }
+  // ----- overlay markers (DOM elements, placed on the map once it is ready) -----
+  var layerEls = { stops: [], nodes: [], bridges: [], parks: [], water: [], places: [] }, markers = [];
+  function place(e, x, y) { markers.push([e, x, y]); }
   STOPS.forEach(function (s, i) {
     if (!s.pin) return;
     var b = el("button", "pin", String(s.short)); b.type = "button"; b.setAttribute("aria-label", "Stop " + s.short + ": " + s.name);
@@ -474,82 +379,97 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   applyLayers();
   if (window.matchMedia && window.matchMedia("(max-width: 860px)").matches) document.getElementById("layers").open = false;
 
-  // ----- pan / zoom -----
-  function minS() { return Math.min(vw() / NATIVE_W, vh() / NATIVE_H) * 0.95; }
-  var MAXS = 1.6, pending = false;
-  function clamp() {
-    st.s = Math.max(minS(), Math.min(MAXS, st.s));
-    var w = NATIVE_W * st.s, h = NATIVE_H * st.s, m = 80;
-    if (w <= vw()) st.x = (vw() - w) / 2; else st.x = Math.min(m, Math.max(vw() - w - m, st.x));
-    if (h <= vh()) st.y = (vh() - h) / 2; else st.y = Math.min(m, Math.max(vh() - h - m, st.y));
+  // ----- maps: A (today or satellite) underneath, B (proposed, or plan over satellite) on top -----
+  // B takes the gestures; A follows B's camera. Compare clips B's canvas, so markers stay whole.
+  function rasterSource(name) {
+    return { type: "raster", tiles: [new URL("xyz/" + name + "/{z}/{x}/{y}.webp", location.href).href], tileSize: 256,
+      minzoom: TJ.minzoom, maxzoom: TJ.maxzoom, bounds: TJ.bounds, attribution: "Plan: MRDCL tender drawings, my reading" };
   }
-  function visRect() {
-    var pad = 160 / st.s;
-    return [(-st.x) / st.s - pad, (-st.y) / st.s - pad, (vw() - st.x) / st.s + pad, (vh() - st.y) / st.s + pad];
+  function style(top) {
+    var src = {}, lyr = [{ id: "bg", type: "background", paint: { "background-color": "#e9e6df" } }];
+    if (CFG && CFG.satellite) {
+      src.sat = { type: "raster", tiles: [CFG.satellite.url], tileSize: 256, maxzoom: CFG.satellite.maxZoom || 19, attribution: CFG.satellite.attribution || "" };
+      lyr.push({ id: "sat", type: "raster", source: "sat", layout: { visibility: "none" } });
+    }
+    if (top) {
+      src.proposed = rasterSource("proposed"); lyr.push({ id: "proposed", type: "raster", source: "proposed", paint: { "raster-fade-duration": 150 } });
+      if (CFG && CFG.satellite) { src.plan = rasterSource("plan"); lyr.push({ id: "plan", type: "raster", source: "plan", layout: { visibility: "none" }, paint: { "raster-opacity": 0.85 } }); }
+    } else {
+      src.today = rasterSource("today"); lyr.push({ id: "today", type: "raster", source: "today", paint: { "raster-fade-duration": 150 } });
+    }
+    return { version: 8, sources: src, layers: lyr };
   }
-  function updateTiles() {
-    pending = false;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2), sd = st.s * dpr;
-    var z = Math.max(0, Math.min(6, 6 - Math.floor(Math.log2(1 / Math.max(sd, 1e-6)))));
-    var r = visRect();
-    if (base === "plan") layers.today.update(z, r);
-    var L = base === "sat" ? layers.plan : layers.proposed; if (L) L.update(z, r);
-    updateSat(r);
+  function whenLib(cb) {
+    if (window.maplibregl) return cb();
+    var s = document.getElementById("mljs"); if (s) s.addEventListener("load", cb); else window.addEventListener("load", cb);
   }
-  function render() {
-    clamp();
-    stage.style.transform = "translate(" + st.x + "px," + st.y + "px) scale(" + st.s + ")";
-    stage.style.setProperty("--inv", (1 / st.s).toFixed(4));
-    stage.classList.toggle("far", st.s < 0.3);
-    stage.classList.toggle("vfar", st.s < 0.12);
+  function getJSON(u) { return fetch(u).then(function (r) { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }); }
+  Promise.all([getJSON("georef.json"), getJSON("xyz/proposed/tiles.json"), getJSON("config.json").catch(function () { return null; })]).then(function (r) {
+    G = r[0]; TJ = r[1]; CFG = r[2] && r[2].satellite && r[2].satellite.url ? r[2] : null;
+    whenLib(initMaps);
+  }).catch(function () { viewer.classList.add("nomap"); });
+
+  function initMaps() {
+    var all = boxBounds(FRAME), w = all[1][0] - all[0][0], h = all[1][1] - all[0][1];
+    var common = { renderWorldCopies: false, maxZoom: 19, dragRotate: false, pitchWithRotate: false, attributionControl: false,
+      bounds: all, maxBounds: [[all[0][0] - w * 0.35, all[0][1] - h * 0.35], [all[1][0] + w * 0.35, all[1][1] + h * 0.35]] };
+    mapA = new maplibregl.Map(Object.assign({ container: "mapA", style: style(false), interactive: false }, common));
+    mapB = new maplibregl.Map(Object.assign({ container: "mapB", style: style(true) }, common));
+    mapB.touchZoomRotate.disableRotation(); mapB.keyboard.disableRotation();
+    mapB.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    mapB.setMinZoom(mapB.getZoom() - 0.6);
+    function sync() { mapA.jumpTo({ center: mapB.getCenter(), zoom: mapB.getZoom(), bearing: 0, pitch: 0 }); updateZoomClass(); }
+    mapB.on("move", sync); sync();
+    markers.forEach(function (m) { new maplibregl.Marker({ element: m[0], anchor: "center" }).setLngLat(ptToLL(m[1], m[2])).addTo(mapB); });
+    mapB.on("load", function () { applyBase(); });
+    viewer.classList.add("ready");
+    if (CFG) {
+      document.querySelector(".top").classList.add("has-sat");
+      if (location.hash === "#sat") setBase("sat");
+    }
     updateSwipe();
-    if (!pending) { pending = true; requestAnimationFrame(updateTiles); }
+    if (pendingBox) { fitBox(pendingBox, false); pendingBox = null; }
   }
-  function zoomAt(f, cx, cy) { var ns = Math.max(minS(), Math.min(MAXS, st.s * f)); st.x = cx - (cx - st.x) * (ns / st.s); st.y = cy - (cy - st.y) * (ns / st.s); st.s = ns; render(); }
+  function updateZoomClass() {
+    var m = mPerPx(mapB.getZoom());
+    viewer.classList.toggle("far", m > 2.8); viewer.classList.toggle("vfar", m > 7);
+  }
   function fitBox(b, animate) {
-    var pad = 30, bw = (b[2] - b[0]) * K, bh = (b[3] - b[1]) * K;
-    var s = Math.min((vw() - pad * 2) / bw, (vh() - pad * 2 - 40) / bh);
-    st.s = Math.max(minS(), Math.min(0.6, s));
-    st.x = vw() / 2 - ((b[0] + b[2]) / 2) * K * st.s; st.y = vh() / 2 + 18 - ((b[1] + b[3]) / 2) * K * st.s;
-    if (animate && !reduceMotion) { stage.classList.add("anim"); clearTimeout(fitBox.t); fitBox.t = setTimeout(function () { stage.classList.remove("anim"); }, 750); }
-    render();
+    if (!mapB) { pendingBox = b; return; }
+    var narrow = vw() < 500;
+    mapB.fitBounds(boxBounds(b), { padding: { top: narrow ? 70 : 56, bottom: 24, left: 24, right: narrow ? 24 : 60 }, maxZoom: 16.8,
+      duration: animate && !reduceMotion ? 900 : 0 });
   }
-  viewer.addEventListener("wheel", function (e) { e.preventDefault(); stage.classList.remove("anim"); var r = viewer.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY * 0.0015), e.clientX - r.left, e.clientY - r.top); }, { passive: false });
-  var ptrs = new Map(), last = null, pinch = null;
-  viewer.addEventListener("pointerdown", function (e) {
-    if (e.target.closest("button")) return;
-    viewer.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    stage.classList.remove("anim"); viewer.classList.add("dragging");
-    if (ptrs.size === 2) { var p = Array.from(ptrs.values()); pinch = { d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) }; }
-    last = { x: e.clientX, y: e.clientY };
-  });
-  viewer.addEventListener("pointermove", function (e) {
-    if (!ptrs.has(e.pointerId)) return;
-    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (ptrs.size === 2 && pinch) { var p = Array.from(ptrs.values()), d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y), r = viewer.getBoundingClientRect(); zoomAt(d / pinch.d, (p[0].x + p[1].x) / 2 - r.left, (p[0].y + p[1].y) / 2 - r.top); pinch.d = d; return; }
-    if (ptrs.size === 1 && last) { st.x += e.clientX - last.x; st.y += e.clientY - last.y; last = { x: e.clientX, y: e.clientY }; render(); }
-  });
-  function endPtr(e) { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) { viewer.classList.remove("dragging"); last = null; } else { var p = Array.from(ptrs.values())[0]; last = { x: p.x, y: p.y }; } }
-  viewer.addEventListener("pointerup", endPtr); viewer.addEventListener("pointercancel", endPtr);
-  viewer.addEventListener("keydown", function (e) {
-    var step = 80;
-    if (e.key === "+" || e.key === "=") zoomAt(1.25, vw() / 2, vh() / 2); else if (e.key === "-") zoomAt(0.8, vw() / 2, vh() / 2);
-    else if (e.key === "ArrowLeft") { st.x += step; render(); } else if (e.key === "ArrowRight") { st.x -= step; render(); }
-    else if (e.key === "ArrowUp") { st.y += step; render(); } else if (e.key === "ArrowDown") { st.y -= step; render(); } else return;
-    e.preventDefault();
-  });
-  document.getElementById("zin").addEventListener("click", function () { zoomAt(1.4, vw() / 2, vh() / 2); });
-  document.getElementById("zout").addEventListener("click", function () { zoomAt(1 / 1.4, vw() / 2, vh() / 2); });
+  document.getElementById("zin").addEventListener("click", function () { if (mapB) mapB.zoomIn(); });
+  document.getElementById("zout").addEventListener("click", function () { if (mapB) mapB.zoomOut(); });
   document.getElementById("zfit").addEventListener("click", function () { fitBox(FRAME, true); });
-  window.addEventListener("resize", function () { render(); });
+
+  // ----- base: survey map or satellite -----
+  function vis(map, id, on) { if (map && map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none"); }
+  function applyBase() {
+    var sat = base === "sat";
+    vis(mapA, "sat", sat); vis(mapA, "today", !sat);
+    vis(mapB, "sat", sat); vis(mapB, "plan", sat); vis(mapB, "proposed", !sat);
+  }
+  function setBase(b) {
+    if (b === "sat" && !CFG) return;
+    base = b; viewer.dataset.base = b;
+    document.querySelectorAll(".basebar button").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.b === b)); });
+    if (mapB && mapB.isStyleLoaded()) applyBase();
+    document.getElementById("lblL").textContent = b === "sat" ? "Satellite" : "Today";
+    setMode(mode);
+  }
+  document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { setBase(x.dataset.b); }); });
+  document.getElementById("opacity").addEventListener("input", function (e) { if (mapB && mapB.getLayer("plan")) mapB.setPaintProperty("plan", "raster-opacity", e.target.value / 100); });
 
   // ----- compare slider -----
   function updateSwipe() {
-    if (mode !== "compare") { propLayerEl.style.clipPath = ""; return; }
+    var c = mapB && mapB.getCanvas();
+    if (mode !== "compare") { if (c) c.style.clipPath = ""; return; }
     var vx = vw() * swipeFrac; swipe.style.left = vx + "px";
-    var sx = Math.max(0, Math.min(NATIVE_W, (vx - st.x) / st.s));
-    propLayerEl.style.clipPath = "inset(0 0 0 " + sx + "px)";
+    if (c) c.style.clipPath = "inset(0 0 0 " + vx + "px)";
   }
+  window.addEventListener("resize", updateSwipe);
   var swipeBtn = document.getElementById("swipeBtn");
   swipeBtn.addEventListener("pointerdown", function (e) {
     e.preventDefault(); swipeBtn.setPointerCapture(e.pointerId);
@@ -569,7 +489,6 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     updateSwipe();
   }
   document.querySelectorAll(".seg button[data-m]").forEach(function (b) { b.addEventListener("click", function () { setMode(b.dataset.m); }); });
-
   // ----- stretch switcher and tour -----
   var bar = document.getElementById("stretchbar"), tour = document.getElementById("tour"), content = document.getElementById("content");
   var stretchOf = {}; STRETCHES.forEach(function (x) { stretchOf[x.id] = x; });
@@ -682,7 +601,6 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   }
   window.addEventListener("hashchange", fromHash);
   setMode("compare");
-  render();
   requestAnimationFrame(function () { fromHash(); });
 })();
 </script>

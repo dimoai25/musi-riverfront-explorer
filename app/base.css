@@ -82,10 +82,10 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
 .place { font: 650 13px/1.2 var(--f-display); color: #3b4a50; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; pointer-events: none; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 6px #fff; }
 .place.water { color: #1f6f8b; }
 .layer-off { display: none !important; }
-.stage.far .tag, .stage.far .dam, .stage.far .place:not(.far) { display: none; }
-.stage.far .node .txt, .stage.far .iconic .txt { display: none; }
-.stage.far .node { padding: 4px; }
-.stage.far .iconic { padding: 5px 6px; }
+.viewer.far .tag, .viewer.far .dam, .viewer.far .place:not(.far) { display: none; }
+.viewer.far .node .txt, .viewer.far .iconic .txt { display: none; }
+.viewer.far .node { padding: 4px; }
+.viewer.far .iconic { padding: 5px 6px; }
 
 .ctrls { position: absolute; right: max(12px, env(safe-area-inset-right, 0px)); top: 12px; display: grid; gap: 6px; z-index: 5; }
 .ctrls button { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font: 600 18px/1 var(--f-body); cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.12); display: grid; place-items: center; }

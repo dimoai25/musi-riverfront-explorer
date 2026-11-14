@@ -21,6 +21,19 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
 - **Satellite is coded but off.** It switches on when `site/config.json` exists with imagery and a georeference (see below).
 - **Next: rebuild on MapLibre GL** in real coordinates, on a branch. That gives smoother zoom and pan, standard tiles, and satellite with the plan on top. Ship it once georeferencing is done.
 
+## MapLibre version (branch `maplibre`)
+- **Same page, new map engine.** `app/body.html` keeps the v2 panel, tour, stretches and markers. The map is MapLibre GL JS 5.6.0, self-hosted in `site/vendor/` (npm and the CDNs are blocked from the build sandbox; the release zip comes from GitHub).
+- **Two synced maps:**
+  - `mapA` (underneath) shows today, or satellite.
+  - `mapB` (on top) shows proposed, or the plan over satellite. It takes the gestures and holds the markers.
+  - Compare clips only mapB's canvas, so the markers stay whole.
+- **Runtime files in `site/`:**
+  - `georef.json` (the fit output) is required; without it the map shows a "could not load" note.
+  - `xyz/{today,proposed,plan}/{z}/{x}/{y}.webp` are the tiles, z11 to z17, with `tiles.json`.
+  - `config.json` is optional and holds only the satellite URL and attribution.
+- **Build the tiles:** `sh tools/make_xyz.sh`. It runs `tools/georef.py` (fit, RMS and leave-one-out errors per point), then `tools/warp_tiles.py` per layer. The warper reads the v2 bundles in `site/tiles/`, so the repo alone is enough. It takes about 7 minutes per layer.
+- **Never commit a made-up georef.** Testing uses synthetic points in the scratchpad only.
+
 ## Coordinate frame
 - **Source:** master plan sheet 1, drawing MHT-MP-PP-01-Z1, Rev R02, Sep 2026 (`OSPackageProposedMasterplan.pdf`, page 1). Its page is 6741 × 4768 pt, rendered landscape.
 - **Frame:**
