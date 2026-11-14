@@ -26,6 +26,7 @@ jobs:
       # Satellite imagery: the key lives in the repo secret ARCGIS_KEY (never in git).
       # It is written into site/config.json at deploy time only. The key is still visible
       # to visitors, as any map key is; its HTTP-referrer restriction is what protects it.
+      # A bad key only turns satellite off (with a warning); it never blocks the deploy.
       - name: Write satellite config
         env:
           ARCGIS_KEY: ${{ secrets.ARCGIS_KEY }}
@@ -33,12 +34,12 @@ jobs:
           if [ -z "$ARCGIS_KEY" ]; then echo "No ARCGIS_KEY secret: satellite stays off."; exit 0; fi
           BASE=https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static
           curl -sSf -H "Referer: https://dimoai25.github.io/" "$BASE?token=$ARCGIS_KEY" -o /tmp/self.json \
-            || { echo "::error::ArcGIS rejected the key or the imagery style path. Check the key's privileges (Static basemap tiles) and referrers."; exit 1; }
+            || { echo "::warning::ArcGIS rejected the key or the imagery style path, so satellite stays off. Check the key's privileges (Static basemap tiles) and referrers."; exit 0; }
           python3 - <<'EOF'
           import json, os
           self = json.load(open('/tmp/self.json'))
           if 'error' in self:
-              raise SystemExit('::error::ArcGIS: ' + json.dumps(self['error']))
+              print('::warning::ArcGIS said no, satellite stays off: ' + json.dumps(self['error'])); raise SystemExit(0)
           base = 'https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static'
           credit = self.get('copyrightText') or 'Esri'
           cfg = {'satellite': {'url': base + '/tile/{z}/{y}/{x}?token=' + os.environ['ARCGIS_KEY'],

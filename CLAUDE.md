@@ -18,10 +18,10 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
   - Zone 1B: Osman Sagar → Bapu Ghat, Ch 0+600 → 12+212, including the Tipu Khan bridge (Ch 10+800).
   - Zone 1A: Himayat Sagar → Bapu Ghat, Ch 1+200 → 9+140, including the Rajendranagar Road / Agriculture University nala area.
   - Today / Compare / Proposed swipe, stretch switcher, 16 stops, sources per stretch.
-- **Satellite is coded but off.** It switches on when `site/config.json` exists with imagery and a georeference (see below).
-- **Next: rebuild on MapLibre GL** in real coordinates, on a branch. That gives smoother zoom and pan, standard tiles, and satellite with the plan on top. Ship it once georeferencing is done.
+- **Georeferenced (15 Nov 2026):** affine fit from the owner's 10 Google Maps points, RMS 12 m. The worst point is cp7 (roundabout, 24 m).
+- **MapLibre version** (below) replaces the v2 engine once tested. Satellite turns on when the `ARCGIS_KEY` repo secret is set.
 
-## MapLibre version (branch `maplibre`)
+## MapLibre version
 - **Same page, new map engine.** `app/body.html` keeps the v2 panel, tour, stretches and markers. The map is MapLibre GL JS 5.6.0, self-hosted in `site/vendor/` (npm and the CDNs are blocked from the build sandbox; the release zip comes from GitHub).
 - **Two synced maps:**
   - `mapA` (underneath) shows today, or satellite.
@@ -39,16 +39,18 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
 - **Frame:**
   - frame point = page point − (30, 420), size 5570 × 4200 pt
   - raster scale 2.5 px/pt, giving a native raster of 13925 × 10500 px
-  - ground scale about 2.1 m per point (about 0.84 m per pixel)
+  - ground scale 1.99 m per point from the georef fit (about 0.8 m per pixel), rotation +0.8°
 - **Legacy v1 "window" coordinates:** frame = window + (440, 260).
 - **Chainage positions:**
   - `data/chainage_pts.json` holds chainage label positions (page pt) per zone, from `pdftotext -bbox`.
   - `data/placed.json` holds the bridges and rubber dams placed by chainage.
-- **Control points:** `data/control_points.csv`, ten existing road/river features in page pt. The guide is `docs/control_points_10.png`. Lat/lng are being captured by the owner from Google Maps.
+- **Control points:** `data/control_points.csv`, ten existing road/river features in page pt, with lat/lng the owner captured from Google Maps. The guide is `docs/control_points_10.png`.
+  - The drawing positions of cp1, cp3 and cp10 were corrected after the first fit. The originals sat on the proposed bridges or off the road, not on the existing road the owner clicked.
+  - To check a point, map the owner's lat/lng into the drawing with a fit that leaves that point out, and look at the crop. Don't assume the click is the error.
 
 ## Satellite config (`site/config.json`, never committed)
 - **MapLibre branch:** the deploy workflow writes `site/config.json` from the repo secret `ARCGIS_KEY`. It uses the ArcGIS Static Basemap Tiles `arcgis/imagery` style, 512 px tiles, and takes the credit line from the service. No secret means satellite stays off. The georeference lives in `site/georef.json`, not here.
-- **The v2 engine (below)** expects the georef inside config.json.
+- **The v2 engine (legacy)** expected the georef inside config.json:
 ```json
 {"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19, "tileSize": 512},
  "georef": {"lat0": 0, "lng0": 0, "kx": 0, "ky": 0, "T": [a, b, c, d, e, f]}}
