@@ -382,7 +382,7 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   // ----- maps: A (today or satellite) underneath, B (proposed, or plan over satellite) on top -----
   // B takes the gestures; A follows B's camera. Compare clips B's canvas, so markers stay whole.
   function rasterSource(name) {
-    return { type: "raster", tiles: [new URL("xyz/" + name + "/{z}/{x}/{y}.webp", location.href).href], tileSize: 256,
+    return { type: "raster", tiles: [location.href.replace(/[#?].*$/, "").replace(/[^\/]*$/, "") + "xyz/" + name + "/{z}/{x}/{y}.webp"], tileSize: 256,
       minzoom: TJ.minzoom, maxzoom: TJ.maxzoom, bounds: TJ.bounds, attribution: "Plan: MRDCL tender drawings, my reading" };
   }
   function style(top) {
