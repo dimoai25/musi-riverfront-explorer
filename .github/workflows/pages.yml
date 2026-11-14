@@ -32,18 +32,18 @@ jobs:
           ARCGIS_KEY: ${{ secrets.ARCGIS_KEY }}
         run: |
           if [ -z "$ARCGIS_KEY" ]; then echo "No ARCGIS_KEY secret: satellite stays off."; exit 0; fi
-          BASE=https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static
-          curl -sSf -H "Referer: https://dimoai25.github.io/" "$BASE?token=$ARCGIS_KEY" -o /tmp/self.json \
-            || { echo "::warning::ArcGIS rejected the key or the imagery style path, so satellite stays off. Check the key's privileges (Static basemap tiles) and referrers."; exit 0; }
+          BASE=https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer
+          curl -sSf -H "Referer: https://dimoai25.github.io/" "$BASE?f=json&token=$ARCGIS_KEY" -o /tmp/self.json \
+            || { echo "::warning::ArcGIS rejected the key or the imagery style path, so satellite stays off. Check the key's privileges (Basemaps: Static basemap tiles) and referrers."; exit 0; }
           python3 - <<'EOF'
           import json, os
           self = json.load(open('/tmp/self.json'))
           if 'error' in self:
               print('::warning::ArcGIS said no, satellite stays off: ' + json.dumps(self['error'])); raise SystemExit(0)
-          base = 'https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static'
+          base = 'https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer'
           credit = self.get('copyrightText') or 'Esri'
           cfg = {'satellite': {'url': base + '/tile/{z}/{y}/{x}?token=' + os.environ['ARCGIS_KEY'],
-                               'attribution': 'Powered by Esri | ' + credit, 'maxZoom': 19, 'tileSize': 512}}
+                               'attribution': 'Powered by Esri | ' + credit, 'maxZoom': 19, 'tileSize': 256}}
           json.dump(cfg, open('site/config.json', 'w'))
           print('Satellite config written. Credit:', credit)
           EOF

@@ -49,10 +49,10 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
   - To check a point, map the owner's lat/lng into the drawing with a fit that leaves that point out, and look at the crop. Don't assume the click is the error.
 
 ## Satellite config (`site/config.json`, never committed)
-- **MapLibre branch:** the deploy workflow writes `site/config.json` from the repo secret `ARCGIS_KEY`. It uses the ArcGIS Static Basemap Tiles `arcgis/imagery` style, 512 px tiles, and takes the credit line from the service. No secret means satellite stays off. The georeference lives in `site/georef.json`, not here.
+- **MapLibre branch:** the deploy workflow writes `site/config.json` from the repo secret `ARCGIS_KEY`. It uses Esri World Imagery through `ibasemaps-api.arcgis.com/.../World_Imagery/MapServer/tile/{z}/{y}/{x}?token=` (256 px tiles; the key needs Basemaps privileges), and takes the credit line from the service. The Static Basemap Tiles service has no imagery base, only `arcgis/imagery/labels`. No secret means satellite stays off. The georeference lives in `site/georef.json`, not here.
 - **The v2 engine (legacy)** expected the georef inside config.json:
 ```json
-{"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19, "tileSize": 512},
+{"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19, "tileSize": 256},
  "georef": {"lat0": 0, "lng0": 0, "kx": 0, "ky": 0, "T": [a, b, c, d, e, f]}}
 ```
 - `T` maps **frame points** to local metres: E = a·x + b·y + c, N = d·x + e·y + f.
