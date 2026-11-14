@@ -1,0 +1,46 @@
+
+/* v2 additions: permanent overlay note, stretch switcher, satellite controls */
+.disc { position: absolute; left: 0; right: 0; top: 0; z-index: 6; padding: 6px 12px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(60px, env(safe-area-inset-right, 0px)); background: var(--ink); color: var(--surface); font: 600 12.5px/1.35 var(--f-body); }
+.disc b { font-weight: 700; }
+.modebadge { top: 44px; }
+.ctrls { top: 44px; }
+.swipe .lbl { top: 50px; }
+.stretchbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 12px 16px 0; }
+.stretchbar button { display: grid; gap: 1px; text-align: left; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; min-width: 0; }
+.stretchbar button small { font: 500 10.5px/1.2 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.stretchbar button span { font: 650 13px/1.2 var(--f-display); overflow-wrap: anywhere; }
+.stretchbar button[aria-pressed="true"] { border-color: var(--river); background: var(--river-soft); }
+.stretchbar button[aria-pressed="true"] small { color: var(--river); }
+.tour .sep { flex: none; width: 1px; background: var(--line); margin: 4px 2px; }
+.cards { display: grid; gap: 8px; }
+.card { display: grid; gap: 2px; text-align: left; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; }
+.card:hover { border-color: var(--river); }
+.card small { font: 500 12px/1.2 var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--river); }
+.card strong { font: 650 16px/1.25 var(--f-display); }
+.card span { font-size: 14px; color: var(--muted); }
+.srclist { display: grid; gap: 6px; }
+.srclist ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+.place.zone { font-size: 18px; color: #1f6f8b; letter-spacing: .12em; }
+.stage.vfar .pin { width: 26px; height: 26px; font-size: 12px; }
+.stage.vfar .pin[aria-current="true"] { width: 32px; height: 32px; font-size: 14px; }
+.stage.vfar .node .txt { display: none; }
+.stage.vfar .node { padding: 3px; }
+.stage.vfar .iconic { display: none; }
+.stage.vfar .place:not(.zone):not(.water) { display: none; }
+.basebar { display: none; }
+.has-sat .basebar { display: inline-flex; }
+.layer { isolation: isolate; }
+#satLayer { z-index: 0; } #todayLayer { z-index: 1; } #propLayer { z-index: 2; } .ov { z-index: 3; }
+.layers .opac { display: none; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.viewer[data-base="sat"] ~ .layers .opac { display: flex; }
+.opac input { width: 120px; }
+.attrib { position: absolute; right: 6px; bottom: 4px; z-index: 6; font: 500 10.5px/1.2 var(--f-body); color: #fff; background: rgba(0,0,0,.45); padding: 2px 6px; border-radius: 4px; display: none; max-width: 70%; text-align: right; }
+.viewer[data-base="sat"] ~ .attrib { display: block; }
+.mapnote { font-size: 12px; color: var(--muted); }
+@media (max-width: 860px) {
+  .disc { font-size: 12px; padding-right: 12px; }
+  .modebadge { top: 58px; } .ctrls { top: 58px; } .swipe .lbl { top: 62px; }
+  .stretchbar { padding: 10px 12px 0; gap: 5px; }
+  .stretchbar button { padding: 6px 7px; }
+  .stretchbar button span { font-size: 12px; }
+}

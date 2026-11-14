@@ -1,0 +1,1010 @@
+{
+ "STOPS": [
+  {
+   "id": "overview",
+   "n": 0,
+   "short": "Overview",
+   "name": "Osman Sagar to the ORR at Narsingi",
+   "ch": "Ch 0+600 to 5+900 · about 5.3 km of river",
+   "box": [
+    0,
+    0,
+    2190,
+    1140
+   ],
+   "lead": "This map covers the first 5.3 km of the Zone 1B riverfront, from the Osman Sagar dam at Gandipet to the Vyas Nagar junctions just past the Outer Ring Road. Drag the handle to swipe between today's survey map and the master plan, then step through the seven stops. Each stop links to similar places already built in India and to the tender sheets that show it.",
+   "nums": [
+    [
+     "6",
+     "vehicle bridges, including the cable-stayed bridge over the ORR"
+    ],
+    [
+     "2",
+     "commercial nodes with multi-level parking"
+    ],
+    [
+     "30 m",
+     "six-lane main road along the river (60–80 km/h design speed)"
+    ],
+    [
+     "3",
+     "rubber dams holding back pools of water"
+    ]
+   ],
+   "sections": [
+    [
+     "Status",
+     "",
+     [
+      "Zone 1B is out to construction (EPC) tender, contract 07/CE/MRDCL/2026-27. All the detail on this map comes from that tender's documents (see Documents).",
+      "Every drawing is stamped \"issued for planning and tender only\" and \"all dimensions tentative\". The master plan used here is Rev R02, Sep 2026.",
+      "Positions on this map come from the plan's own survey base, so they line up with each other. Matching them to an exact plot needs the official cadastral drawings."
+     ]
+    ],
+    [
+     "How the corridor works",
+     "var(--river)",
+     [
+      "The main road is a 30 m, six-lane divided arterial with a 1.2 m median, 3.5 m lanes, bus bays and a 4 m footpath and cycle track on each side.",
+      "Service roads of 15–22 m run on the opposite bank for local access.",
+      "The roads report describes the corridor as an east–west spine linking the ORR, the PVNR Expressway and the inner city, with \"future expressway segments\" in parts of Zone 1B."
+     ]
+    ],
+    [
+     "Watch-outs across the stretch",
+     "",
+     [
+      "The ESMP counts about 639 affected structures and about 2,660 affected trees across Zone 1.",
+      "Parts of the works fall inside the 10 km eco-sensitive buffer of Mrugavani National Park, which needs wildlife-board (NBWL) clearance.",
+      "Land acquisition for the project is being challenged in the Telangana High Court; some landowners have interim protection.",
+      "Footbridges are marked \"not included in DPR\", so treat them as uncertain."
+     ]
+    ]
+   ]
+  },
+  {
+   "id": "stop-1",
+   "refs": [
+    [
+     "Sabarmati Riverfront",
+     "Ahmedabad",
+     "Continuous promenades with roads running alongside, on both banks of a city river. The closest built example in India of the corridor drawn here.",
+     "https://en.wikipedia.org/wiki/Sabarmati_Riverfront"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 1 (Ch 0+720 to 2+520), and service-road sheet 8"
+    ],
+    [
+     "Proposed master plan",
+     "sheet 1 (whole zone) and the first Zone 1B part plan"
+    ],
+    [
+     "Road and bridge DBR",
+     "Hill Road and Goshala bridges"
+    ]
+   ],
+   "n": 1,
+   "short": "1",
+   "name": "Osman Sagar gateway, Gandipet",
+   "ch": "Ch 0+600 to 1+000",
+   "pin": [
+    228,
+    597
+   ],
+   "box": [
+    40,
+    440,
+    470,
+    760
+   ],
+   "chips": [
+    "2 bridges",
+    "Trail head"
+   ],
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "Where the Musi leaves the Osman Sagar dam. Housing layouts sit on both sides of the Gandipet roads to the north-west; the river corridor itself is open land with rock outcrops."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "Hill Road bridge at the dam (Ch 0+600): 18 m wide, three lanes.",
+      "Goshala bridge (Ch 0+900): 34 m wide, six lanes, with a new roundabout on the north bank.",
+      "A 22 m road from Gandipet to Goushala Road feeds the 30 m main road east toward Narsingi. Cross roads continue to Gandipet and Chevella."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "This is the western entry to the corridor. Expect it to collect traffic from Gandipet and the Chevella side heading east to the ORR.",
+      "Bus bays are drawn on both banks just downstream."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "Start of the \"Riverfront Eco Trail\" theme. Existing boulders and a rock formation on the north bank are kept as features.",
+      "Footbridge PB-01 crosses at about Ch 1+200 (not included in DPR)."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "Gandipet already draws weekend visitors to the reservoir. The trail head gives them a place to continue along the river.",
+      "A Rs 1,108 crore Omkareshwara temple has been announced at Manchirevula with a 30 m road from the Gandipet side (reported Oct 2026). Its exact site is not on these drawings."
+     ]
+    ]
+   ],
+   "outlook": [
+    "No commercial node is planned in this stretch.",
+    "The two new bridges should shorten trips between the Gandipet/Chevella side and Kokapet. The new north-bank roundabout is the likeliest spot for small shops to appear first (my reading)."
+   ],
+   "watch": [
+    "Land around the reservoir falls under the twin-reservoir catchment rules (GO 111 / GO 69), which the state is reviewing.",
+    "Work beside the dam needs extra clearances."
+   ]
+  },
+  {
+   "id": "stop-2",
+   "refs": [
+    [
+     "Atal Pedestrian Bridge",
+     "Sabarmati Riverfront, Ahmedabad",
+     "A footbridge across the river that became a destination in its own right. The plan draws several footbridges on this reach.",
+     "https://en.wikipedia.org/wiki/Atal_Pedestrian_Bridge"
+    ],
+    [
+     "Sabarmati Riverfront",
+     "Ahmedabad",
+     "Its lower promenade and steps down to the water are a good picture of the trail and ghats drawn here.",
+     "https://en.wikipedia.org/wiki/Sabarmati_Riverfront"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 1 (Ch 0+720 to 2+520), service roads on sheets 8 to 10"
+    ],
+    [
+     "Proposed master plan",
+     "Eco Trail and ghats, footbridges PB-01 and PB-02"
+    ],
+    [
+     "Landscaping requirements",
+     "promenades, ghats and planting"
+    ]
+   ],
+   "n": 2,
+   "short": "2",
+   "name": "Eco Trail and western ghats",
+   "ch": "Ch 1+000 to 2+500",
+   "pin": [
+    720,
+    742
+   ],
+   "box": [
+    420,
+    560,
+    1080,
+    930
+   ],
+   "chips": [
+    "Long, quiet reach",
+    "2 footbridges"
+   ],
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "A long, straight reach with open land on both banks. Villa layouts are set back to the north and to the south-west."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "The 30 m main road runs on the north bank. A 15 m, two-lane service road (Gandipet to Manchirevula) runs on the south bank.",
+      "Footbridges PB-01 and PB-02 cross the river here; both are marked \"not included in DPR\"."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "Few cross streets, so the main road runs uninterrupted for about 1.5 km. Good for through traffic, harder to cross on foot without the footbridges.",
+      "Bus bays and toilet blocks are drawn along both banks."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "Riverfront Eco Trail: planted slopes, stone revetment and the riverside promenade.",
+      "Ghat steps on both banks give access down to the water."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "A walking and cycling stretch, likely busiest early morning and evening. The ghats suit small cultural events."
+     ]
+    ]
+   ],
+   "outlook": [
+    "No commercial node is planned here.",
+    "With few junctions, this reach reads as a quiet edge for walking, cycling and river views rather than a shopping street (my reading)."
+   ],
+   "watch": [
+    "The road layout sheets show existing high-tension power lines along parts of this reach. Their relocation is not detailed."
+   ]
+  },
+  {
+   "id": "stop-3",
+   "refs": [
+    [
+     "Kashi Vishwanath Corridor",
+     "Varanasi",
+     "A temple precinct opened up to the river ghats, with visitor facilities around it. Similar idea, at a much larger scale.",
+     "https://www.drishtiias.com/daily-news-analysis/kashi-vishwanath-corridor"
+    ],
+    [
+     "Gayaji Dam (rubber dam)",
+     "Falgu river, Gaya",
+     "India's longest rubber dam, built to hold water beside the Vishnupad temple for pilgrims. The same idea as the rubber dam just upstream of this junction.",
+     "https://www.etvbharat.com/english/bharat/nitish-inaugurates-countrys-longest-rubber-dam-in-bihars-gaya/na20220908175443383383783"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 2 (Ch 2+520 to 4+110)"
+    ],
+    [
+     "Proposed master plan",
+     "Temple Junction, parklets and commercial node 1"
+    ],
+    [
+     "Rubber dams DBR",
+     "the dam at Ch 2.550"
+    ]
+   ],
+   "n": 3,
+   "short": "3",
+   "c": true,
+   "name": "Veerabhadra Swamy temple junction",
+   "ch": "Ch 2+500 to 2+900",
+   "pin": [
+    1172,
+    878
+   ],
+   "box": [
+    1030,
+    760,
+    1340,
+    1010
+   ],
+   "chips": [
+    "Commercial node 1",
+    "Temple bridge"
+   ],
+   "chipNode": 0,
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "The existing Veerabhadra Swamy temple stands on the south bank. The land around it is largely open."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "Temple bridge (Ch 2+800): 34 m wide, six lanes, linking two new roundabouts (Temple Junction north and south).",
+      "From the south roundabout a road runs south-east to the ORR service road."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "The river turns north here, so the junctions handle the main road, the bridge and the ORR link together.",
+      "Temple festivals will add peaks. The parking at the node is meant to absorb them."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "Wellness Parklet beside the temple, a Wet Meadow \"sponge\" parklet with ponds on the north bank, and a Yoga Parklet with ghat steps.",
+      "A rubber dam at Ch 2+550 holds a pool of water just upstream."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "Temple, yoga ghat and a standing pool of water together make this a pilgrimage and wellness stop. It is the most natural place on this stretch for evening events."
+     ]
+    ]
+   ],
+   "outlook": [
+    "Commercial node 1: the plan marks \"surface + multi-level car parking along with ancillary facilities and activity generating usages\" on the south bank beside the temple.",
+    "My reading: food, retail and services for temple visitors and park users, around the south roundabout."
+   ],
+   "watch": [
+    "\"Activity generating usages\" is not defined in the tender files, and the size of the node is not stated.",
+    "Expect construction disruption on local roads while the bridge and junctions are built."
+   ]
+  },
+  {
+   "id": "stop-4",
+   "refs": [
+    [
+     "Yamuna Biodiversity Park",
+     "Delhi",
+     "Wetlands, ponds and native planting on a river floodplain, open to visitors. Close in spirit to the Wetland Sensory Park.",
+     "https://en.wikipedia.org/wiki/Yamuna_Biodiversity_Park"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 2 (Ch 2+520 to 4+110)"
+    ],
+    [
+     "Proposed master plan",
+     "OS Proposed Park 1: Wetland Sensory Park and Picnic Lawn"
+    ],
+    [
+     "Rubber dams DBR",
+     "the dam at Ch 3.690"
+    ],
+    [
+     "Landscaping requirements",
+     "park sizes and types"
+    ]
+   ],
+   "n": 4,
+   "short": "4",
+   "name": "River bend park and bend bridge",
+   "ch": "Ch 3+000 to 3+800",
+   "pin": [
+    1262,
+    600
+   ],
+   "box": [
+    1130,
+    360,
+    1420,
+    780
+   ],
+   "chips": [
+    "Largest park on this stretch",
+    "bend bridge"
+   ],
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "The river loops north. Open land sits inside the bend, with villa communities to the west and to the south-east."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "bend bridge (Ch 3+400): 34 m wide, six lanes, set at a sharp 60° angle. It joins the existing road on the west bank to the new Bend roundabout.",
+      "The 22 m, four-lane Narsingi–ORR service road starts at Ch 3+330."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "Roads run on both banks around the bend. The bridge and roundabout become the main crossing between the villa areas and the ORR side."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "\"OS Proposed Park 1\": a Wetland Sensory Park and a Picnic Lawn filling the inside of the bend, with ponds and wetland planting. This is the largest landscaped area on this stretch.",
+      "A second rubber dam at Ch 3+690 holds water through the bend."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "A family destination: picnic lawns, wetland walks and water views, with parking next door at commercial node 2."
+     ]
+    ]
+   ],
+   "outlook": [
+    "The streets facing the park change the most here; those a block back stay quieter but close to it (my reading).",
+    "No commercial node inside the park itself; activity concentrates at the roundabout (stop 5)."
+   ],
+   "watch": [
+    "The plan does not give the park's area. The tender requires at least one 10–15+ acre community park in the zone but does not say which park that is."
+   ]
+  },
+  {
+   "id": "stop-5",
+   "refs": [
+    [
+     "Kankaria Lakefront",
+     "Ahmedabad",
+     "A lakefront redeveloped with food stalls, attractions and parking around the water. A useful picture of what \"activity generating usages\" next to parking can look like.",
+     "https://en.wikipedia.org/wiki/Kankaria_Lake"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 2 (Ch 2+520 to 4+110) and north-bank service road sheet 11"
+    ],
+    [
+     "Proposed master plan",
+     "the bend roundabout and commercial node 2"
+    ]
+   ],
+   "n": 5,
+   "short": "5",
+   "c": true,
+   "name": "Bend roundabout",
+   "ch": "Ch 3+800 to 4+300",
+   "pin": [
+    1338,
+    416
+   ],
+   "box": [
+    1250,
+    250,
+    1530,
+    500
+   ],
+   "chips": [
+    "Commercial node 2",
+    "ORR link"
+   ],
+   "chipNode": 1,
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "Open land just west of the ORR, between villa layouts. The ORR service road runs to the east."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "A new roundabout joins the riverfront main road, the bend bridge and a direct road east to the ORR service road.",
+      "Footbridge PB-03 crosses to the north bank (not included in DPR)."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "The busiest junction on this stretch: riverfront traffic meets ORR-bound traffic here. A single roundabout may come under pressure at peak hours (my reading; the tender files give no traffic volumes).",
+      "Bus bays are drawn on the main road nearby."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "Sits at the edge of the Wetland Sensory Park, so it doubles as the park's main entrance by car."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "The main arrival point for park visitors coming off the ORR."
+     ]
+    ]
+   ],
+   "outlook": [
+    "Commercial node 2: \"surface + multi-level car parking along with ancillary facilities and activity generating usages\" inside the bend next to the roundabout.",
+    "My reading: likely the busiest node on this stretch, being the closest to the ORR and to the Kokapet and Neopolis office cluster."
+   ],
+   "watch": [
+    "As with node 1, the uses and size are not defined.",
+    "The Raidurg–Kokapet Neopolis metro line is proposed but not sanctioned."
+   ]
+  },
+  {
+   "id": "stop-6",
+   "refs": [
+    [
+     "Durgam Cheruvu Bridge",
+     "Hyderabad",
+     "Hyderabad's own cable-stayed bridge, lit at night and now a city landmark. The planned bridge is a similar type, crossing the ORR corridor.",
+     "https://en.wikipedia.org/wiki/Durgam_Cheruvu_Bridge"
+    ],
+    [
+     "Signature Bridge",
+     "Delhi",
+     "A cable-stayed bridge over the Yamuna that doubles as a viewpoint and landmark.",
+     "https://en.wikipedia.org/wiki/Signature_Bridge"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheet 3 (Ch 4+110 to 5+640)"
+    ],
+    [
+     "Road and bridge DBR",
+     "the cable-stayed bridge (100 + 200 + 100 m spans)"
+    ],
+    [
+     "Rubber dams DBR",
+     "the dam at Ch 4.980"
+    ]
+   ],
+   "n": 6,
+   "short": "6",
+   "name": "Iconic bridge over the ORR",
+   "ch": "Ch 4+400 to 5+100",
+   "pin": [
+    1598,
+    262
+   ],
+   "box": [
+    1500,
+    120,
+    1880,
+    480
+   ],
+   "chips": [
+    "Cable-stayed bridge",
+    "ORR crossing"
+   ],
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "The river passes under the ORR between Narsingi to the north-east and the Budvel side to the south. The Kokapet nala joins from the north."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "A cable-stayed bridge at Ch 4+800 with two pylons and spans of 100 + 200 + 100 m, 34 m wide (six lanes), carries the riverfront road across the ORR corridor.",
+      "ORR service roads continue north toward Gachibowli and south toward Budvel. A road north along the Kokapet nala reaches the Shankarpalli road and Kokapet."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "The riverfront road gets its own crossing of the ORR instead of feeding into the existing Narsingi interchange. This is what turns it into a continuous east–west corridor."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "The bridge itself is the landmark. A third rubber dam at Ch 4+980 keeps water under and just past it."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "Likely the signature image of the riverfront: visible from the ORR, a natural night-lighting and photo spot (my reading)."
+     ]
+    ]
+   ],
+   "outlook": [
+    "No commercial node at the bridge itself. The bridge gives the riverfront a landmark that is visible from the ORR (my reading)."
+   ],
+   "watch": [
+    "MRDCL has tendered the cable-stayed bridge separately from the rest of Zone 1B."
+   ]
+  },
+  {
+   "id": "stop-7",
+   "refs": [
+    [
+     "Necklace Road",
+     "Hussain Sagar, Hyderabad",
+     "Evening walks, lighting and small food stalls along the water. Roughly the everyday use a neighbourhood stretch like this could see.",
+     "https://en.wikipedia.org/wiki/Necklace_Road"
+    ]
+   ],
+   "look": [
+    [
+     "Road layout plans",
+     "sheets 3 and 4 (Ch 4+110 to 7+260)"
+    ],
+    [
+     "Nala crossings",
+     "Manchirevula nala at Ch 5+550"
+    ],
+    [
+     "Environmental and social plan (ESMP)",
+     "construction impacts at Narsingi and Manchirevula"
+    ]
+   ],
+   "n": 7,
+   "short": "7",
+   "name": "Vyas Nagar and Manchirevula junctions",
+   "ch": "Ch 5+200 to 5+900",
+   "pin": [
+    2015,
+    470
+   ],
+   "box": [
+    1810,
+    300,
+    2190,
+    640
+   ],
+   "chips": [
+    "Local bridge",
+    "Dense neighbourhoods"
+   ],
+   "sections": [
+    [
+     "Today",
+     "#8d8a83",
+     [
+      "Compact existing neighbourhoods on both sides: Narsingi to the north and Manchirevula to the south. The survey shows the densest housing on this stretch."
+     ]
+    ],
+    [
+     "Connectivity",
+     "var(--river)",
+     [
+      "Vyas Nagar (Manchirevula) bridge at Ch 5+400: 18 m wide, three lanes, joining two junctions.",
+      "Roads lead north to Narsingi and south to Manchirevula. A 15 m service road continues along the north bank toward Ibrahimbagh."
+     ]
+    ],
+    [
+     "Traffic and movement",
+     "var(--road)",
+     [
+      "A local connector rather than a through route, given the narrower bridge. Expect local Narsingi–Manchirevula trips to switch to it."
+     ]
+    ],
+    [
+     "Landscape and public space",
+     "var(--park)",
+     [
+      "\"Glow Parklet\", a lighting-themed parklet on the north bank. The Manchirevula nala crosses under the road in a culvert at about Ch 5+550."
+     ]
+    ],
+    [
+     "Tourism",
+     "#7a4fb0",
+     [
+      "Neighbourhood scale: evening walks and local use rather than a destination."
+     ]
+    ]
+   ],
+   "outlook": [
+    "Established neighbourhoods get a riverfront edge for the first time. Small shops along the junction roads and gradual change on older river-facing plots are the likely effects (my reading)."
+   ],
+   "watch": [
+    "The ESMP names Narsingi and Manchirevula for construction-phase impacts. Dense stretches are where affected structures are most likely."
+   ]
+  },
+  {
+   "id": "documents",
+   "docs": true,
+   "short": "Documents",
+   "name": "The tender documents behind this map",
+   "ch": "Zone 1B construction tender · contract 07/CE/MRDCL/2026-27",
+   "box": [
+    0,
+    0,
+    2190,
+    1140
+   ]
+  }
+ ],
+ "FEATURES": [
+  {
+   "t": "node",
+   "i": 0,
+   "x": 1193,
+   "y": 940,
+   "label": "Commercial node 1",
+   "stop": "stop-3"
+  },
+  {
+   "t": "node",
+   "i": 1,
+   "x": 1368,
+   "y": 350,
+   "label": "Commercial node 2",
+   "stop": "stop-5"
+  },
+  {
+   "t": "iconic",
+   "x": 1690,
+   "y": 318,
+   "label": "Iconic cable-stayed bridge",
+   "stop": "stop-6"
+  },
+  {
+   "t": "bridge",
+   "x": 140,
+   "y": 536,
+   "label": "Hill Road bridge",
+   "sub": "18 m · Ch 0+600"
+  },
+  {
+   "t": "bridge",
+   "x": 305,
+   "y": 640,
+   "label": "Goshala bridge",
+   "sub": "34 m · Ch 0+900"
+  },
+  {
+   "t": "bridge",
+   "x": 1212,
+   "y": 842,
+   "label": "Temple bridge",
+   "sub": "34 m · Ch 2+800"
+  },
+  {
+   "t": "bridge",
+   "x": 1205,
+   "y": 500,
+   "label": "bend bridge",
+   "sub": "34 m · Ch 3+400"
+  },
+  {
+   "t": "bridge",
+   "x": 1937,
+   "y": 430,
+   "label": "Vyas Nagar bridge",
+   "sub": "18 m · Ch 5+400"
+  },
+  {
+   "t": "foot",
+   "x": 562,
+   "y": 700,
+   "label": "Footbridge PB-01",
+   "sub": "not in DPR"
+  },
+  {
+   "t": "foot",
+   "x": 892,
+   "y": 822,
+   "label": "Footbridge PB-02",
+   "sub": "not in DPR"
+  },
+  {
+   "t": "foot",
+   "x": 1395,
+   "y": 268,
+   "label": "Footbridge PB-03",
+   "sub": "not in DPR"
+  },
+  {
+   "t": "park",
+   "x": 723,
+   "y": 800,
+   "label": "Riverfront Eco Trail"
+  },
+  {
+   "t": "park",
+   "x": 650,
+   "y": 690,
+   "label": "Ghat steps"
+  },
+  {
+   "t": "park",
+   "x": 948,
+   "y": 872,
+   "label": "Ghat steps"
+  },
+  {
+   "t": "park",
+   "x": 1215,
+   "y": 795,
+   "label": "Wet Meadow Parklet"
+  },
+  {
+   "t": "park",
+   "x": 1110,
+   "y": 920,
+   "label": "Wellness Parklet"
+  },
+  {
+   "t": "park",
+   "x": 1290,
+   "y": 880,
+   "label": "Yoga Parklet, ghats"
+  },
+  {
+   "t": "park",
+   "x": 1300,
+   "y": 382,
+   "label": "Wetland Sensory Park"
+  },
+  {
+   "t": "park",
+   "x": 1222,
+   "y": 446,
+   "label": "Picnic Lawn"
+  },
+  {
+   "t": "park",
+   "x": 1990,
+   "y": 415,
+   "label": "Glow Parklet"
+  },
+  {
+   "t": "dam",
+   "x": 1045,
+   "y": 862,
+   "label": "Rubber dam · Ch 2+550"
+  },
+  {
+   "t": "dam",
+   "x": 1268,
+   "y": 520,
+   "label": "Rubber dam · Ch 3+690"
+  },
+  {
+   "t": "dam",
+   "x": 1745,
+   "y": 330,
+   "label": "Rubber dam · Ch 4+980"
+  },
+  {
+   "t": "place",
+   "x": 70,
+   "y": 980,
+   "label": "Osman Sagar",
+   "water": true,
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 300,
+   "y": 465,
+   "label": "Gandipet",
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 900,
+   "y": 130,
+   "label": "Kokapet",
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 1060,
+   "y": 470,
+   "label": "the bend"
+  },
+  {
+   "t": "place",
+   "x": 1655,
+   "y": 700,
+   "label": "Outer Ring Road",
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 1530,
+   "y": 92,
+   "label": "To Shankarpalli Rd"
+  },
+  {
+   "t": "place",
+   "x": 1985,
+   "y": 270,
+   "label": "Narsingi",
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 1975,
+   "y": 660,
+   "label": "Manchirevula",
+   "far": true
+  },
+  {
+   "t": "place",
+   "x": 1640,
+   "y": 960,
+   "label": "Budvel"
+  }
+ ],
+ "DOCS": [
+  [
+   "Proposed master plan",
+   "OSPackageProposedMasterplan.pdf",
+   "Start here",
+   "7 sheets, prepared by Meinhardt for MRDCL (Rev R02, Sep 2026). Sheet 1 shows all of Zones 1A and 1B to scale; sheets 2 to 6 zoom into Zone 1B from west to east; sheet 7 is the Gandhi Sarovar and Bapu Ghat confluence. Parks, ghats, promenades, parking, rubber dams and footbridges. This map is built from sheet 1."
+  ],
+  [
+   "Road layout plans",
+   "1ROADS-1.pdf",
+   "Start here",
+   "12 large sheets. Sheets 1 to 7 follow the main riverfront road from Osman Sagar to Gandhi Sarovar in chainage order; sheets 8 to 12 are the service roads on each bank. Lanes, medians, bridges, footpaths, cycle tracks and existing power lines."
+  ],
+  [
+   "Typical road and bridge sections",
+   "1ROADS-2.pdf",
+   "",
+   "2 sheets showing what the 30 m, 22 m and 15 m roads and the 34 m and 18 m bridges look like in cross-section: lanes, bus bays, footpath and cycle track."
+  ],
+  [
+   "Design Basis Report: roads and bridges",
+   "DBRroads.pdf",
+   "",
+   "Every road and bridge in Zone 1B with its width and chainage, design speeds (60 to 80 km/h on the main road), and how the corridor ties into the ORR and the PVNR Expressway. Includes the cable-stayed bridge's spans."
+  ],
+  [
+   "Design Basis Report: rubber dams",
+   "DBRrubberDamsZoneAB.pdf",
+   "",
+   "Where the rubber dams sit on both arms of the river and how they hold back pools of water."
+  ],
+  [
+   "Landscaping requirements (ER 6.26)",
+   "626LandscapingRequirements.pdf",
+   "",
+   "What the contractor must deliver in public space: upper and lower promenades, plazas, ghats, overlooks, vending, toilets, lighting and public art, plus minimum park sizes and native planting."
+  ],
+  [
+   "Environmental and social management plan (ESMP)",
+   "ESMPreport.pdf",
+   "",
+   "Affected structures (about 639) and trees (about 2,660) across Zone 1, the Mrugavani eco-sensitive zone, heritage sites, sewage interception, and where construction will be felt most."
+  ],
+  [
+   "River basin types",
+   "ProposedRiverBasinTypes.pdf",
+   "",
+   "One sheet giving the shape and width of the river channel along its length."
+  ],
+  [
+   "Nala crossings",
+   "MusiZ1BNALAS.pdf",
+   "",
+   "Three sheets on the culverts where four storm-water drains (nalas) meet the river."
+  ],
+  [
+   "River cross-sections",
+   "OSSectionsZ1B.pdf",
+   "For engineers",
+   "65 pages of cross-sections every 90 m, with cut, fill and flood levels."
+  ],
+  [
+   "Slope revetment and gabions",
+   "SlopeRevetGabion.pdf",
+   "For engineers",
+   "One sheet on how the river banks are protected."
+  ]
+ ]
+}

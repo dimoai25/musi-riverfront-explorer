@@ -1,0 +1,13 @@
+# Tender PDFs: link to the official portal, don't republish
+source/
+*.pdf
+# Large intermediate rasters and build scratch
+*.raw.png
+work/
+dist/
+node_modules/
+.DS_Store
+# Satellite config holds a key: add only once coordinates are real
+site/config.json
+# Internal notes and unredacted data (repo is public)
+private/
