@@ -48,7 +48,7 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
 
 ## Satellite config (`site/config.json`, not committed until the coordinates are real)
 ```json
-{"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19},
+{"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19, "tileSize": 512},
  "georef": {"lat0": 0, "lng0": 0, "kx": 0, "ky": 0, "T": [a, b, c, d, e, f]}}
 ```
 - `T` maps **frame points** to local metres: E = a·x + b·y + c, N = d·x + e·y + f.

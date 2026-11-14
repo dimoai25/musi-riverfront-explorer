@@ -123,7 +123,7 @@
   function style(top) {
     var src = {}, lyr = [{ id: "bg", type: "background", paint: { "background-color": "#e9e6df" } }];
     if (CFG && CFG.satellite) {
-      src.sat = { type: "raster", tiles: [CFG.satellite.url], tileSize: 256, maxzoom: CFG.satellite.maxZoom || 19, attribution: CFG.satellite.attribution || "" };
+      src.sat = { type: "raster", tiles: [CFG.satellite.url], tileSize: CFG.satellite.tileSize || 256, maxzoom: CFG.satellite.maxZoom || 19, attribution: CFG.satellite.attribution || "" };
       lyr.push({ id: "sat", type: "raster", source: "sat", layout: { visibility: "none" } });
     }
     if (top) {
