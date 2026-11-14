@@ -46,7 +46,9 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
   - `data/placed.json` holds the bridges and rubber dams placed by chainage.
 - **Control points:** `data/control_points.csv`, ten existing road/river features in page pt. The guide is `docs/control_points_10.png`. Lat/lng are being captured by the owner from Google Maps.
 
-## Satellite config (`site/config.json`, not committed until the coordinates are real)
+## Satellite config (`site/config.json`, never committed)
+- **MapLibre branch:** the deploy workflow writes `site/config.json` from the repo secret `ARCGIS_KEY`. It uses the ArcGIS Static Basemap Tiles `arcgis/imagery` style, 512 px tiles, and takes the credit line from the service. No secret means satellite stays off. The georeference lives in `site/georef.json`, not here.
+- **The v2 engine (below)** expects the georef inside config.json.
 ```json
 {"satellite": {"url": "https://…/{z}/{y}/{x}?token=KEY", "attribution": "…", "maxZoom": 19, "tileSize": 512},
  "georef": {"lat0": 0, "lng0": 0, "kx": 0, "ky": 0, "T": [a, b, c, d, e, f]}}

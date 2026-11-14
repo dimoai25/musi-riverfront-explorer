@@ -23,6 +23,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Satellite imagery: the key lives in the repo secret ARCGIS_KEY (never in git).
+      # It is written into site/config.json at deploy time only. The key is still visible
+      # to visitors, as any map key is; its HTTP-referrer restriction is what protects it.
+      - name: Write satellite config
+        env:
+          ARCGIS_KEY: ${{ secrets.ARCGIS_KEY }}
+        run: |
+          if [ -z "$ARCGIS_KEY" ]; then echo "No ARCGIS_KEY secret: satellite stays off."; exit 0; fi
+          BASE=https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static
+          curl -sSf -H "Referer: https://dimoai25.github.io/" "$BASE?token=$ARCGIS_KEY" -o /tmp/self.json \
+            || { echo "::error::ArcGIS rejected the key or the imagery style path. Check the key's privileges (Static basemap tiles) and referrers."; exit 1; }
+          python3 - <<'EOF'
+          import json, os
+          self = json.load(open('/tmp/self.json'))
+          if 'error' in self:
+              raise SystemExit('::error::ArcGIS: ' + json.dumps(self['error']))
+          base = 'https://static-map-tiles-api.arcgis.com/arcgis/rest/services/static-basemap-tiles-service/v1/arcgis/imagery/static'
+          credit = self.get('copyrightText') or 'Esri'
+          cfg = {'satellite': {'url': base + '/tile/{z}/{y}/{x}?token=' + os.environ['ARCGIS_KEY'],
+                               'attribution': 'Powered by Esri | ' + credit, 'maxZoom': 19, 'tileSize': 512}}
+          json.dump(cfg, open('site/config.json', 'w'))
+          print('Satellite config written. Credit:', credit)
+          EOF
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
