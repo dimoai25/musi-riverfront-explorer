@@ -13,13 +13,14 @@ Tick an item when it ships, and add a line on what changed.
   - One-way only: an email form (Buttondown, a Google Form or similar) or "Follow on X for updates". No WhatsApp group or community to moderate.
   - Ask only for an email address. Say what it's for and how to unsubscribe.
   - Count sign-ups as a PostHog event.
-- [ ] **UI/UX pass.** Collect the specific items here as they come up. Known so far:
-  - On phones, the left swipe label ("Today" / "Satellite") hides under the mode badge.
-  - Check how the amber disclaimer reads in dark mode.
-  - **"Map layers" panel has no visible close control.**
-    - Once it's open, the only way to close it is tapping the card's header, top right, and nothing shows that.
-    - Fix: give the header an obvious close button (an × or "Hide", at least 44 px to tap) and a chevron that turns when open.
-    - On phones, also close it when the map is tapped.
+- [x] **UI/UX pass 1** (shipped 15 Nov 2026):
+  - Map layers has a header with a layers icon and a "Hide ⌄" button. It also closes on a map tap on phones, and on Escape.
+  - The swipe labels sit below the mode badge on phones.
+  - The disclaimer was checked in dark mode: the amber stays readable.
+  - On phones, Next and Previous bring the map back into view, so you see it move to the stop. Before, you stayed scrolled down at the text.
+  - The map credits start collapsed to the (i) button, so they no longer cover the layers button on phones.
+- [ ] **UI/UX pass 2:** collect new items here.
+  - Dark mode: the swipe labels blend into the light map background. Give them a border.
 
 ## When something changes in the project
 

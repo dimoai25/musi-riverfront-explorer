@@ -35,7 +35,7 @@
       <button type="button" id="zfit" aria-label="Show the whole corridor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     </div>
     <details class="layers" id="layers" open>
-      <summary>Map layers</summary>
+      <summary aria-controls="layers"><span class="lt"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5M2 17.5l10 5 10-5"/></svg>Map layers</span><span class="lx" aria-hidden="true"><span class="lx-open">Hide</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></span></summary>
       <label><input type="checkbox" id="l-stops" data-l="stops" checked> <span class="sw" style="background:var(--river)"></span>Tour stops</label>
       <label><input type="checkbox" id="l-nodes" data-l="nodes" checked> <span class="sw" style="background:var(--node)"></span>Commercial nodes</label>
       <label><input type="checkbox" id="l-bridges" data-l="bridges" checked> <span class="sw" style="background:#6f7a80"></span>Bridges</label>
@@ -218,9 +218,12 @@
     mapB = new maplibregl.Map(Object.assign({ container: "mapB", style: style(true) }, common));
     mapB.touchZoomRotate.disableRotation(); mapB.keyboard.disableRotation();
     mapB.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+    // start the credits collapsed to the (i) button, so they don't cover the layers panel on phones
+    mapB.once("load", function () { var a = viewer.querySelector(".maplibregl-ctrl-attrib"); if (a) a.classList.remove("maplibregl-compact-show"); });
     mapB.setMinZoom(mapB.getZoom() - 0.6);
     function sync() { mapA.jumpTo({ center: mapB.getCenter(), zoom: mapB.getZoom(), bearing: 0, pitch: 0 }); updateZoomClass(); }
     mapB.on("move", sync); sync();
+    mapB.on("click", function () { var L = document.getElementById("layers"); if (L.open && window.matchMedia("(max-width: 860px)").matches) L.open = false; });
     mapB.on("moveend", function (e) { if (e.originalEvent) { A.once("map_moved"); A.zoom(mapB.getZoom()); } });
     markers.forEach(function (m) { new maplibregl.Marker({ element: m[0], anchor: "center" }).setLngLat(ptToLL(m[1], m[2])).addTo(mapB); });
     mapB.on("load", function () { applyBase(); });
@@ -390,16 +393,23 @@
     STRETCHES.forEach(function (x) { x.btn.setAttribute("aria-pressed", String(!!s.stretch && x.id === activeStretch)); });
     STOPS.forEach(function (t, k) { if (t.tabEl) t.tabEl.setAttribute("aria-current", String(k === i)); if (t.pinEl) t.pinEl.setAttribute("aria-current", String(k === i)); });
     renderStop(i); fitBox(s.box, true);
+    // phones: the map sits above the text, so bring it back into view when moving between stops
+    if (!fromHash && window.matchMedia("(max-width: 860px)").matches) {
+      var mw = document.querySelector(".mapwrap"), r = mw.getBoundingClientRect();
+      if (r.top < -8) window.scrollTo(0, window.scrollY + r.top);
+    }
     document.getElementById("prev").disabled = i === 0;
     var nx = document.getElementById("next"); nx.disabled = i === STOPS.length - 1;
     var nxt = STOPS[i + 1];
     nx.textContent = i === 0 ? "Start with Zone 1B" : (!nxt ? "End of tour" : nxt.docs ? "Documents" : nxt.intro ? "Next stretch" : "Next stop");
     if (!fromHash) { try { history.replaceState(null, "", "#" + s.id); } catch (e) {} }
-    if (s.tabEl && s.tabEl.scrollIntoView) s.tabEl.scrollIntoView({ block: "nearest", inline: "nearest" });
+    // keep the current tab visible in the tour strip without scrolling the page itself
+    if (s.tabEl) { var tl = s.tabEl.offsetLeft - tour.offsetLeft, tw = s.tabEl.offsetWidth; if (tl < tour.scrollLeft || tl + tw > tour.scrollLeft + tour.clientWidth) tour.scrollLeft = tl - (tour.clientWidth - tw) / 2; }
   }
   document.getElementById("prev").addEventListener("click", function () { go(current - 1, false, "prev"); });
   document.getElementById("next").addEventListener("click", function () { go(current + 1, false, "next"); });
   document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { var L = document.getElementById("layers"); if (L.open) { L.open = false; L.querySelector("summary").focus(); return; } }
     if (e.target.closest && e.target.closest("input, textarea, #viewer, #swipeBtn")) return;
     if (e.key === "ArrowRight" || e.key === "PageDown") { go(current + 1); e.preventDefault(); } else if (e.key === "ArrowLeft" || e.key === "PageUp") { go(current - 1); e.preventDefault(); }
   });

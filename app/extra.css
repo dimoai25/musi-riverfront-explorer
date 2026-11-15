@@ -58,3 +58,19 @@
 .nomap-msg { display: none; position: absolute; inset: auto 16px 40% 16px; text-align: center; color: var(--muted); font: 500 14px/1.4 var(--f-body); }
 .viewer.nomap .nomap-msg { display: block; }
 @media (prefers-reduced-motion: reduce) { .viewer .mapB .maplibregl-canvas { transition: none; } }
+
+/* Map layers: a header that reads as a control, with a visible Hide button when open */
+.layers summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 40px; margin: -8px -10px; padding: 6px 8px 6px 10px; border-radius: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+.layers[open] summary { margin-bottom: 4px; border-bottom: 1px solid var(--line); border-radius: 10px 10px 0 0; }
+.layers summary:focus-visible { outline: 2px solid var(--river); outline-offset: 2px; }
+.layers .lt { display: inline-flex; align-items: center; gap: 7px; }
+.layers .lt svg { width: 16px; height: 16px; color: var(--river); }
+.layers .lx { display: inline-flex; align-items: center; justify-content: center; gap: 3px; min-width: 32px; min-height: 30px; padding: 0 9px; border-radius: 999px; background: var(--river-soft); color: var(--river); font: 650 12px/1 var(--f-body); }
+.layers .chev { width: 14px; height: 14px; transition: transform .2s; }
+.layers[open] .chev { transform: rotate(180deg); }
+.layers:not([open]) .lx-open { display: none; }
+.layers:not([open]) .lx { padding: 0 6px; }
+.layers summary:hover .lx { filter: brightness(.96); }
+@media (prefers-reduced-motion: reduce) { .layers .chev { transition: none; } }
+/* phones: keep the swipe labels clear of the mode badge */
+@media (max-width: 600px) { .swipe .lbl { top: calc(var(--dh, 36px) + 44px); } }
