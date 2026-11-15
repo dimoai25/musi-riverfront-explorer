@@ -34,6 +34,17 @@ The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.y
 - **Build the tiles:** `sh tools/make_xyz.sh`. It runs `tools/georef.py` (fit, RMS and leave-one-out errors per point), then `tools/warp_tiles.py` per layer. The warper reads the v2 bundles in `site/tiles/`, so the repo alone is enough. It takes about 7 minutes per layer.
 - **Never commit a made-up georef.** Testing uses synthetic points in the scratchpad only.
 
+## Analytics (PostHog, no library)
+- About 60 lines inline in `app/body.html` (`var A = ...`). They POST to PostHog's `/batch/` endpoint and add no files or cookies. A random id lives in localStorage and a session id in sessionStorage. `$process_person_profile: false` keeps every visitor anonymous.
+- **On only when** `config.json` has `analytics.key`, written at deploy from the repo secret `POSTHOG_KEY`. The host comes from the repo variable `POSTHOG_HOST`, default `https://us.i.posthog.com`.
+- **Off for** Do Not Track, Global Privacy Control and `?notrack`. The Documents page says what is counted.
+- **Events:**
+  - `$pageview` (with `landing_stop`) and `$pageleave` (seconds, stops_seen, max_zoom).
+  - `stop_viewed` (stop, stretch, kind, via: tap / prev / next / map_pin / stretch_bar / link).
+  - `view_mode`, `base_map`, `layer_toggled`, `link_clicked`.
+  - `map_moved` and `compare_dragged`, once per page.
+- Every event also carries `utm_*`, `$referring_domain` and `in_app` (X / WhatsApp / Instagram webviews).
+
 ## Coordinate frame
 - **Source:** master plan sheet 1, drawing MHT-MP-PP-01-Z1, Rev R02, Sep 2026 (`OSPackageProposedMasterplan.pdf`, page 1). Its page is 6741 × 4768 pt, rendered landscape.
 - **Frame:**

@@ -23,29 +23,45 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      # Satellite imagery: the key lives in the repo secret ARCGIS_KEY (never in git).
-      # It is written into site/config.json at deploy time only. The key is still visible
-      # to visitors, as any map key is; its HTTP-referrer restriction is what protects it.
-      # A bad key only turns satellite off (with a warning); it never blocks the deploy.
-      - name: Write satellite config
+      # Runtime config, written at deploy time only (never in git):
+      # - Satellite: repo secret ARCGIS_KEY. Visible to visitors like any map key; its
+      #   HTTP-referrer restriction protects it. A bad key only turns satellite off.
+      # - Analytics: repo secret POSTHOG_KEY (the project key, phc_...), and optionally the
+      #   repo variable POSTHOG_HOST (default https://us.i.posthog.com; EU: https://eu.i.posthog.com).
+      - name: Write runtime config
         env:
           ARCGIS_KEY: ${{ secrets.ARCGIS_KEY }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+          POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
         run: |
-          if [ -z "$ARCGIS_KEY" ]; then echo "No ARCGIS_KEY secret: satellite stays off."; exit 0; fi
-          BASE=https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer
-          curl -sSf -H "Referer: https://dimoai25.github.io/" "$BASE?f=json&token=$ARCGIS_KEY" -o /tmp/self.json \
-            || { echo "::warning::ArcGIS rejected the key or the imagery style path, so satellite stays off. Check the key's privileges (Basemaps: Static basemap tiles) and referrers."; exit 0; }
+          if [ -n "$ARCGIS_KEY" ]; then
+            curl -sSf -H "Referer: https://dimoai25.github.io/" \
+              "https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer?f=json&token=$ARCGIS_KEY" -o /tmp/self.json \
+              || echo "::warning::ArcGIS rejected the key, so satellite stays off. Check its Basemaps privileges and referrers."
+          fi
           python3 - <<'EOF'
           import json, os
-          self = json.load(open('/tmp/self.json'))
-          if 'error' in self:
-              print('::warning::ArcGIS said no, satellite stays off: ' + json.dumps(self['error'])); raise SystemExit(0)
-          base = 'https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer'
-          credit = self.get('copyrightText') or 'Esri'
-          cfg = {'satellite': {'url': base + '/tile/{z}/{y}/{x}?token=' + os.environ['ARCGIS_KEY'],
-                               'attribution': 'Powered by Esri | ' + credit, 'maxZoom': 19, 'tileSize': 256}}
-          json.dump(cfg, open('site/config.json', 'w'))
-          print('Satellite config written. Credit:', credit)
+          cfg = {}
+          if os.environ.get('ARCGIS_KEY') and os.path.exists('/tmp/self.json'):
+              meta = json.load(open('/tmp/self.json'))
+              if 'error' in meta:
+                  print('::warning::ArcGIS said no, satellite stays off: ' + json.dumps(meta['error']))
+              else:
+                  base = 'https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer'
+                  credit = meta.get('copyrightText') or 'Esri'
+                  cfg['satellite'] = {'url': base + '/tile/{z}/{y}/{x}?token=' + os.environ['ARCGIS_KEY'],
+                                      'attribution': 'Powered by Esri | ' + credit, 'maxZoom': 19, 'tileSize': 256}
+                  print('Satellite on. Credit:', credit)
+          else:
+              print('No ARCGIS_KEY secret: satellite off.')
+          if os.environ.get('POSTHOG_KEY'):
+              cfg['analytics'] = {'key': os.environ['POSTHOG_KEY'].strip(),
+                                  'host': (os.environ.get('POSTHOG_HOST') or 'https://us.i.posthog.com').strip()}
+              print('Analytics on:', cfg['analytics']['host'])
+          else:
+              print('No POSTHOG_KEY secret: analytics off.')
+          if cfg:
+              json.dump(cfg, open('site/config.json', 'w'))
           EOF
       - uses: actions/upload-pages-artifact@v3
         with:

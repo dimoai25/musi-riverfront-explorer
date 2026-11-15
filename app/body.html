@@ -26,7 +26,7 @@
       <div class="mapB" id="mapB"></div>
       <p class="nomap-msg">The map could not load. The tour on the right still works.</p>
     </div>
-    <div class="disc" role="note"><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition.</div>
+    <div class="disc" role="note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3z" fill="currentColor"/><path d="M12 10v5M12 18v.01" stroke="#ffc83d" stroke-width="2.4" stroke-linecap="round"/></svg><span><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition.<span class="satnote"> On satellite, the plan can sit 10–30 m off.</span></span></div>
     <div class="swipe" id="swipe"><span class="lbl l" id="lblL">Today</span><span class="lbl r">Proposed</span><button type="button" id="swipeBtn" aria-label="Drag to compare today and proposed"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></button></div>
     <div class="modebadge" id="badge">Compare · drag the handle</div>
     <div class="ctrls">
@@ -71,6 +71,71 @@
   var K = 2.5, NATIVE_W = 13925, NATIVE_H = 10500, FRAME = [0, 0, 5570, 4200];
   var LAYER_OF = { node: "nodes", iconic: "bridges", bridge: "bridges", foot: "bridges", park: "parks", dam: "water", place: "places" };
 
+  // ----- analytics: a few anonymous counts sent straight to PostHog (no library, no cookies) -----
+  // On only when config.json carries analytics.key (written at deploy from the POSTHOG_KEY secret).
+  // Respects Do Not Track / Global Privacy Control, and ?notrack. A random id is kept in this browser only.
+  var A = (function () {
+    var key = null, host = null, q = [], wait = [], timer = null, t0 = Date.now(), seenStops = {}, once = {}, maxZoom = 0;
+    var off = navigator.doNotTrack === "1" || window.doNotTrack === "1" || navigator.globalPrivacyControl === true || /[?&]notrack\b/.test(location.search);
+    function uuid7() {
+      var h = Date.now().toString(16).padStart(12, "0"), r = "";
+      for (var i = 0; i < 20; i++) r += Math.floor(Math.random() * 16).toString(16);
+      return h.slice(0, 8) + "-" + h.slice(8) + "-7" + r.slice(0, 3) + "-" + "89ab"[Math.floor(Math.random() * 4)] + r.slice(3, 6) + "-" + r.slice(6, 18);
+    }
+    function stored(store, k) { try { var v = store.getItem(k); if (!v) { v = uuid7(); store.setItem(k, v); } return v; } catch (e) { return uuid7(); } }
+    var did = stored(window.localStorage, "mx_id"), sid = stored(window.sessionStorage, "mx_sid");
+    var ua = navigator.userAgent, W = window.screen ? screen.width : 0;
+    var os = /Android/.test(ua) ? "Android" : /iPhone|iPad|iPod/.test(ua) ? "iOS" : /Windows/.test(ua) ? "Windows" : /Mac OS X/.test(ua) ? "Mac OS X" : /Linux/.test(ua) ? "Linux" : "Other";
+    var browser = /Edg\//.test(ua) ? "Microsoft Edge" : /SamsungBrowser/.test(ua) ? "Samsung Internet" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /FxiOS|Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : /iPhone|iPad/.test(ua) ? "Mobile Safari" : "Other";
+    var device = /iPad|Tablet/.test(ua) ? "Tablet" : /Mobi|Android|iPhone/.test(ua) ? "Mobile" : "Desktop";
+    var inApp = /Twitter|TwitterAndroid|FBAN|FBAV|Instagram|WhatsApp|LinkedInApp/.exec(ua);
+    var ref = document.referrer, refDomain = "$direct";
+    try { if (ref) refDomain = new URL(ref).hostname; } catch (e) {}
+    var utm = {}; try { new URLSearchParams(location.search).forEach(function (v, k) { if (/^utm_/.test(k)) utm[k] = v; }); } catch (e) {}
+    function base() {
+      return Object.assign({ distinct_id: did, $session_id: sid, $process_person_profile: false, $lib: "musi-mini",
+        $current_url: location.href, $host: location.host, $pathname: location.pathname, $referrer: ref || "$direct", $referring_domain: refDomain,
+        $os: os, $browser: browser, $device_type: device, $screen_width: W, $viewport_width: window.innerWidth, in_app: inApp ? inApp[0] : null,
+        $raw_user_agent: ua, lang: navigator.language }, utm);
+    }
+    function flush(leaving) {
+      if (!key || off || !q.length) return;
+      var body = JSON.stringify({ api_key: key, batch: q.splice(0) }), url = host + "/batch/";
+      if (leaving && navigator.sendBeacon) { try { navigator.sendBeacon(url, new Blob([body], { type: "text/plain" })); return; } catch (e) {} }
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: !!leaving }).catch(function () {});
+    }
+    function track(event, props) {
+      if (off) return;
+      var e = { event: event, properties: Object.assign(base(), props || {}), timestamp: new Date().toISOString() };
+      if (key) { q.push(e); clearTimeout(timer); timer = setTimeout(flush, event === "$pageview" ? 0 : 4000); } else if (host !== false) wait.push(e);
+    }
+    function trackOnce(event, props) { if (!once[event]) { once[event] = 1; track(event, props); } }
+    fetch("config.json").then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (c) {
+      var a = c && c.analytics;
+      if (!a || !a.key || off) { host = false; wait = []; return; }
+      key = a.key; host = (a.host || "https://us.i.posthog.com").replace(/\/$/, "");
+      q = wait.splice(0); flush();
+    });
+    function leave() {
+      if (once.$pageleave) return; once.$pageleave = 1;
+      track("$pageleave", { seconds: Math.round((Date.now() - t0) / 1000), stops_seen: Object.keys(seenStops).length, max_zoom: Math.round(maxZoom * 10) / 10 });
+      flush(true);
+    }
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flush(true); });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (a && a.host && a.host !== location.host) track("link_clicked", { url: a.href, link_host: a.host, text: (a.textContent || "").trim().slice(0, 80) });
+    });
+    return { track: track, once: trackOnce, stop: function (id) { seenStops[id] = 1; }, zoom: function (z) { if (z > maxZoom) maxZoom = z; } };
+  })();
+
+  // keep the map badges just under the disclaimer, whatever its height (it grows on satellite and on phones)
+  (function () {
+    var d = document.querySelector(".disc"), w = document.querySelector(".mapwrap");
+    function set() { w.style.setProperty("--dh", d.offsetHeight + "px"); }
+    set(); if (window.ResizeObserver) new ResizeObserver(set).observe(d); else window.addEventListener("resize", set);
+  })();
   var viewer = document.getElementById("viewer"), swipe = document.getElementById("swipe"), badge = document.getElementById("badge");
   var mode = "compare", base = "plan", swipeFrac = 0.5, current = 0, activeStretch = "w";
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -93,7 +158,7 @@
   STOPS.forEach(function (s, i) {
     if (!s.pin) return;
     var b = el("button", "pin", String(s.short)); b.type = "button"; b.setAttribute("aria-label", "Stop " + s.short + ": " + s.name);
-    b.addEventListener("click", function (ev) { ev.stopPropagation(); go(i); });
+    b.addEventListener("click", function (ev) { ev.stopPropagation(); go(i, false, "map_pin"); });
     place(b, s.pin[0], s.pin[1]); layerEls.stops.push(b); s.pinEl = b;
   });
   FEATURES.forEach(function (f) {
@@ -110,6 +175,7 @@
     place(e, f.x, f.y); layerEls[LAYER_OF[f.t]].push(e);
   });
   function applyLayers() { document.querySelectorAll("#layers input[type=checkbox]").forEach(function (c) { (layerEls[c.dataset.l] || []).forEach(function (e) { e.classList.toggle("layer-off", !c.checked); }); }); }
+  document.querySelectorAll("#layers input[type=checkbox]").forEach(function (c) { c.addEventListener("change", function () { A.track("layer_toggled", { layer: c.dataset.l, on: c.checked }); }); });
   document.querySelectorAll("#layers input[type=checkbox]").forEach(function (c) { c.addEventListener("change", applyLayers); });
   applyLayers();
   if (window.matchMedia && window.matchMedia("(max-width: 860px)").matches) document.getElementById("layers").open = false;
@@ -155,6 +221,7 @@
     mapB.setMinZoom(mapB.getZoom() - 0.6);
     function sync() { mapA.jumpTo({ center: mapB.getCenter(), zoom: mapB.getZoom(), bearing: 0, pitch: 0 }); updateZoomClass(); }
     mapB.on("move", sync); sync();
+    mapB.on("moveend", function (e) { if (e.originalEvent) { A.once("map_moved"); A.zoom(mapB.getZoom()); } });
     markers.forEach(function (m) { new maplibregl.Marker({ element: m[0], anchor: "center" }).setLngLat(ptToLL(m[1], m[2])).addTo(mapB); });
     mapB.on("load", function () { applyBase(); });
     viewer.classList.add("ready");
@@ -194,6 +261,7 @@
     document.getElementById("lblL").textContent = b === "sat" ? "Satellite" : "Today";
     setMode(mode);
   }
+  document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { A.track("base_map", { base: x.dataset.b }); }); });
   document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { setBase(x.dataset.b); }); });
   document.getElementById("opacity").addEventListener("input", function (e) { if (mapB && mapB.getLayer("plan")) mapB.setPaintProperty("plan", "raster-opacity", e.target.value / 100); });
 
@@ -207,6 +275,7 @@
   window.addEventListener("resize", updateSwipe);
   var swipeBtn = document.getElementById("swipeBtn");
   swipeBtn.addEventListener("pointerdown", function (e) {
+    A.once("compare_dragged");
     e.preventDefault(); swipeBtn.setPointerCapture(e.pointerId);
     function mv(ev) { var r = viewer.getBoundingClientRect(); swipeFrac = Math.max(0.03, Math.min(0.97, (ev.clientX - r.left) / r.width)); updateSwipe(); }
     function up() { swipeBtn.removeEventListener("pointermove", mv); swipeBtn.removeEventListener("pointerup", up); swipeBtn.removeEventListener("pointercancel", up); }
@@ -223,13 +292,14 @@
     badge.textContent = m === "today" ? (sat ? "Satellite imagery" : "Today · survey base map") : m === "compare" ? "Compare · drag the handle" : (sat ? "Plan over satellite" : "Proposed · master plan Rev R02");
     updateSwipe();
   }
+  document.querySelectorAll(".seg button[data-m]").forEach(function (b) { b.addEventListener("click", function () { A.track("view_mode", { mode: b.dataset.m }); }); });
   document.querySelectorAll(".seg button[data-m]").forEach(function (b) { b.addEventListener("click", function () { setMode(b.dataset.m); }); });
   // ----- stretch switcher and tour -----
   var bar = document.getElementById("stretchbar"), tour = document.getElementById("tour"), content = document.getElementById("content");
   var stretchOf = {}; STRETCHES.forEach(function (x) { stretchOf[x.id] = x; });
   STRETCHES.forEach(function (x) {
     var b = el("button"); b.type = "button"; b.dataset.s = x.id; b.appendChild(el("small", null, x.zone)); b.appendChild(el("span", null, x.name));
-    b.addEventListener("click", function () { go(STOPS.findIndex(function (s) { return s.id === x.first; })); });
+    b.addEventListener("click", function () { go(STOPS.findIndex(function (s) { return s.id === x.first; }), false, "stretch_bar"); });
     bar.appendChild(b); x.btn = b;
   });
   function buildTour() {
@@ -270,6 +340,7 @@
       c.appendChild(el("span", "file", d[1])); c.appendChild(el("p", null, d[3])); if (d[4]) c.appendChild(linkTo("Open the PDF", d[4])); content.appendChild(c);
     });
     content.appendChild(el("p", "note", "Every sheet is stamped “issued for planning and tender only” and “all dimensions tentative”. Details can change in final design."));
+    content.appendChild(el("p", "note", "This page counts anonymous visits and which stops people open, to see what is useful. No cookies, no names, no tracking across other sites. Browsers set to Do Not Track are not counted."));
   }
   function refsSection(refs) {
     var d = el("section", "sec"), h = el("h3"), i = el("i"); i.style.background = "var(--ink)"; h.appendChild(i); h.appendChild(document.createTextNode("Similar places already built")); d.appendChild(h);
@@ -307,9 +378,13 @@
     if (s.id === "overview") content.appendChild(sourcesBox("Sources", ["Master plan for riverfront, Zone 1A & 1B (drawing MHT-MP-PP-01-Z1), Meinhardt for MRDCL, Rev R02, Sep 2026, plus the Zone 1B part plans and road layout sheets.", "Design Basis Reports: Roads and Bridges; Rubber Dams (Zones A and B).", "EPC Employer's Requirements: ESMP and 6.26 Landscaping.", "Each stretch's introduction lists the exact sheets used."]));
     content.scrollTop = 0;
   }
-  function go(i, fromHash) {
+  var firstGo = true;
+  function go(i, fromHash, via) {
     if (i < 0 || i >= STOPS.length) return;
     current = i; var s = STOPS[i];
+    if (firstGo) { firstGo = false; A.track("$pageview", { landing_stop: s.id }); }
+    else { A.track("stop_viewed", { stop: s.id, stretch: s.stretch || null, kind: s.docs ? "documents" : s.intro ? "intro" : s.n ? "stop" : "overview", via: via || (fromHash ? "link" : "tap") }); }
+    A.stop(s.id);
     if (s.stretch && s.stretch !== activeStretch) activeStretch = s.stretch;
     buildTour();
     STRETCHES.forEach(function (x) { x.btn.setAttribute("aria-pressed", String(!!s.stretch && x.id === activeStretch)); });
@@ -322,8 +397,8 @@
     if (!fromHash) { try { history.replaceState(null, "", "#" + s.id); } catch (e) {} }
     if (s.tabEl && s.tabEl.scrollIntoView) s.tabEl.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
-  document.getElementById("prev").addEventListener("click", function () { go(current - 1); });
-  document.getElementById("next").addEventListener("click", function () { go(current + 1); });
+  document.getElementById("prev").addEventListener("click", function () { go(current - 1, false, "prev"); });
+  document.getElementById("next").addEventListener("click", function () { go(current + 1, false, "next"); });
   document.addEventListener("keydown", function (e) {
     if (e.target.closest && e.target.closest("input, textarea, #viewer, #swipeBtn")) return;
     if (e.key === "ArrowRight" || e.key === "PageDown") { go(current + 1); e.preventDefault(); } else if (e.key === "ArrowLeft" || e.key === "PageUp") { go(current - 1); e.preventDefault(); }
