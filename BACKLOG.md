@@ -16,6 +16,10 @@ Tick an item when it ships, and add a line on what changed.
 - [ ] **UI/UX pass.** Collect the specific items here as they come up. Known so far:
   - On phones, the left swipe label ("Today" / "Satellite") hides under the mode badge.
   - Check how the amber disclaimer reads in dark mode.
+  - **"Map layers" panel has no visible close control.**
+    - Once it's open, the only way to close it is tapping the card's header, top right, and nothing shows that.
+    - Fix: give the header an obvious close button (an × or "Hide", at least 44 px to tap) and a chevron that turns when open.
+    - On phones, also close it when the map is tapped.
 
 ## When something changes in the project
 
