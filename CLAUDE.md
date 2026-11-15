@@ -4,6 +4,8 @@ A public, phone-first explorer of the Musi Riverfront Development Project (Hyder
 
 The live site is `site/`, deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. Its URL is https://dimoai25.github.io/musi-riverfront-explorer/.
 
+The backlog is `BACKLOG.md`. Check it at the start of a session and tick items as they ship.
+
 ## Guardrails (do not break)
 - **Permanent note on the map.** It must always be visible: "Approximate overlay based on public plans. Not for judging impact on any specific property or land acquisition."
 - **No builder or project names**, on the map, in the copy, or anywhere in this repo (it is public). Gated-community names printed on the drawing have been removed from the plan image, the text and the committed data. The design reports name some bridges after them; we use neutral names instead (bend bridge, Ibrahimbagh bridge, Goshala bridge). `tools/build_v2_data.py` refuses output containing them, checked by hashed word so the names never appear in code.
