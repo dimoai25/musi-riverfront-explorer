@@ -37,7 +37,7 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
 - **Never commit a made-up georef.** Testing uses synthetic points in the scratchpad only.
 
 ## Analytics (PostHog, no library)
-- About 60 lines inline in `app/body.html` (`var A = ...`). They POST to PostHog's `/batch/` endpoint and add no files or cookies. A random id lives in localStorage and a session id in sessionStorage. `$process_person_profile: false` keeps every visitor anonymous.
+- About 60 lines inline in `app/body.html` (`var A = ...`). They POST to PostHog's `/batch/` endpoint and add no files or cookies. A random id lives in localStorage. The session id (also localStorage) rotates after 30 minutes idle or 24 hours, like posthog-js. `$process_person_profile: false` keeps every visitor anonymous.
 - **On only when** `config.json` has `analytics.key`, written at deploy from the repo secret `POSTHOG_KEY`. The host comes from the repo variable `POSTHOG_HOST`, default `https://us.i.posthog.com`.
 - **Off for** Do Not Track, Global Privacy Control and `?notrack`. The Documents page says what is counted.
 - **Events:**

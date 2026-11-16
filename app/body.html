@@ -83,7 +83,17 @@
       return h.slice(0, 8) + "-" + h.slice(8) + "-7" + r.slice(0, 3) + "-" + "89ab"[Math.floor(Math.random() * 4)] + r.slice(3, 6) + "-" + r.slice(6, 18);
     }
     function stored(store, k) { try { var v = store.getItem(k); if (!v) { v = uuid7(); store.setItem(k, v); } return v; } catch (e) { return uuid7(); } }
-    var did = stored(window.localStorage, "mx_id"), sid = stored(window.sessionStorage, "mx_sid");
+    var did = stored(window.localStorage, "mx_id");
+    // a session ends after 30 minutes idle or 24 hours, as PostHog's own library does (keeps session length honest)
+    var sid = null, sStart = 0, sLast = 0;
+    try { var sv = JSON.parse(localStorage.getItem("mx_s") || "null"); if (sv) { sid = sv[0]; sStart = sv[1]; sLast = sv[2]; } } catch (e) {}
+    function session() {
+      var now = Date.now();
+      if (!sid || now - sLast > 30 * 60e3 || now - sStart > 24 * 3600e3) { sid = uuid7(); sStart = now; }
+      sLast = now;
+      try { localStorage.setItem("mx_s", JSON.stringify([sid, sStart, sLast])); } catch (e) {}
+      return sid;
+    }
     var ua = navigator.userAgent, W = window.screen ? screen.width : 0;
     var os = /Android/.test(ua) ? "Android" : /iPhone|iPad|iPod/.test(ua) ? "iOS" : /Windows/.test(ua) ? "Windows" : /Mac OS X/.test(ua) ? "Mac OS X" : /Linux/.test(ua) ? "Linux" : "Other";
     var browser = /Edg\//.test(ua) ? "Microsoft Edge" : /SamsungBrowser/.test(ua) ? "Samsung Internet" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /FxiOS|Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : /iPhone|iPad/.test(ua) ? "Mobile Safari" : "Other";
@@ -93,7 +103,7 @@
     try { if (ref) refDomain = new URL(ref).hostname; } catch (e) {}
     var utm = {}; try { new URLSearchParams(location.search).forEach(function (v, k) { if (/^utm_/.test(k)) utm[k] = v; }); } catch (e) {}
     function base() {
-      return Object.assign({ distinct_id: did, $session_id: sid, $process_person_profile: false, $lib: "musi-mini",
+      return Object.assign({ distinct_id: did, $session_id: session(), $process_person_profile: false, $lib: "musi-mini",
         $current_url: location.href, $host: location.host, $pathname: location.pathname, $referrer: ref || "$direct", $referring_domain: refDomain,
         $os: os, $browser: browser, $device_type: device, $screen_width: W, $viewport_width: window.innerWidth, in_app: inApp ? inApp[0] : null,
         $raw_user_agent: ua, lang: navigator.language }, utm);
