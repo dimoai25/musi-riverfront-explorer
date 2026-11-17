@@ -25,6 +25,10 @@ Tick an item when it ships, and add a line on what changed.
   - The tour moved into a bottom sheet.
   - The disclaimer shows in full, then shrinks to one line (tap it to expand).
   - Opens on Satellite + Compare on Gandipet to Narsingi, with a one-time drag hint.
+- [x] **Owner feedback after testing on iPhone** (shipped 17 Nov 2026):
+  - Map layers is now a round button under "show all" on phones, opening a small panel.
+  - Zoom buttons are hidden on phones, since pinch does the same.
+  - The sheet handle shows an up arrow with "Swipe up for details" (nudges 3 times), and a down arrow when open.
 - [ ] **UI/UX pass 3:** collect new items here.
   - Check the bottom sheet against Safari's floating toolbar on a real iPhone (it can't be emulated here).
   - Make `?notrack` stick in the owner's browsers.

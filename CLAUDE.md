@@ -47,9 +47,9 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
 - **On the map:**
   - the disclaimer line;
   - the map bar: Today / Compare / Proposed, plus a Satellite / Survey map toggle that names the base you would switch to;
-  - the zoom buttons and the layers panel.
+  - "show all" and a round Map layers button under it (zoom buttons are hidden on phones, since pinch does the same).
 - **The tour is a bottom sheet** (`#panel`, `data-sheet` = peek / half / full).
-  - Drag or tap the grab handle to resize it.
+  - Drag or tap the grab handle to resize it. When collapsed it shows an up arrow and "Swipe up for details"; when open, a down arrow.
   - Tapping the map returns it to peek.
   - `--sheet-h` holds its height, so the compare handle, layers panel, credits and stop fitting stay above it.
 - **Default view, every device:**

@@ -339,21 +339,35 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   .modebadge { display: none; }
   .ctrls { top: calc(var(--dh, 36px) + 92px); right: 10px; }
   .ctrls button { width: 40px; height: 40px; }
+  .ctrls #zin, .ctrls #zout { display: none; }
   .swipe .lbl { top: calc(var(--dh, 36px) + 58px); }
   .swipe .l { right: 8px; } .swipe .r { left: 8px; }
   /* handle sits in the middle of the visible map, above the sheet */
   .swipe button, .swipe .hint { top: calc(var(--dh, 36px) + 50px + (100% - var(--dh, 36px) - 50px - var(--sheet-h, 0px)) * .5); }
   .swipe .hint { margin-top: -66px; left: 0; transform: translateX(-50%); }
   .swipe .hint::before { left: 50%; top: auto; bottom: -5px; margin: 0 0 0 -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
-  .layers { left: 10px; bottom: calc(var(--sheet-h, 0px) + 10px); max-height: calc(100% - var(--sheet-h, 0px) - var(--dh, 36px) - 70px); overflow-y: auto; }
+  .layers { box-sizing: border-box; left: auto; right: 10px; bottom: auto; top: calc(var(--dh, 36px) + 138px); width: min(260px, calc(100vw - 20px)); max-height: calc(100% - var(--sheet-h, 0px) - var(--dh, 36px) - 150px); overflow-y: auto; }
+  .layers:not([open]) { width: 40px; height: 40px; padding: 0; border-radius: 8px; overflow: hidden; display: block; }
+  .layers:not([open]) summary { margin: 0; padding: 0; min-height: 40px; height: 40px; justify-content: center; border-radius: 8px; }
+  .layers:not([open]) .lt { font-size: 0; gap: 0; }
+  .layers:not([open]) .lt svg { width: 20px; height: 20px; }
+  .layers:not([open]) .lx { display: none; }
   .mapwrap .maplibregl-ctrl-bottom-right { bottom: var(--sheet-h, 0px); }
 
   /* the tour as a bottom sheet */
   .panel { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; height: 270px; border: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 22px rgba(0,0,0,.22); overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0px); }
   .panel.anim { transition: height .25s ease; }
   .grab { display: flex; flex: none; justify-content: center; align-items: center; height: 24px; width: 100%; border: 0; background: transparent; cursor: grab; touch-action: none; padding: 0; -webkit-tap-highlight-color: transparent; }
-  .grab span { width: 40px; height: 5px; border-radius: 3px; background: var(--line); }
-  .grab:focus-visible span { background: var(--river); }
+  /* the handle says what it does: an up arrow and "Swipe up for details" when collapsed, a down arrow when open */
+  .grab { height: 34px; }
+  .grab .gpill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 12px 3px 9px; border-radius: 999px; background: var(--river-soft); color: var(--river); font: 650 12.5px/1 var(--f-body); }
+  .grab .gchev { width: 16px; height: 16px; transition: transform .25s; }
+  .panel:not([data-sheet="peek"]) .grab .gchev { transform: rotate(180deg); }
+  .panel:not([data-sheet="peek"]) .grab .glbl { display: none; }
+  .panel:not([data-sheet="peek"]) .grab .gpill { padding: 3px 14px; }
+  .panel[data-sheet="peek"] .grab .gchev { animation: gnudge 1.6s ease-in-out 1.2s 3; }
+  @keyframes gnudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  .grab:focus-visible .gpill { outline: 2px solid var(--river); outline-offset: 2px; }
   .stretchbar { padding: 0 12px; gap: 5px; }
   .stretchbar button { padding: 5px 7px; }
   .stretchbar button small { font-size: 9.5px; }
@@ -375,7 +389,7 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   .basetoggle span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .top h1 { font-size: 15.5px; }
 }
-@media (max-width: 860px) and (prefers-reduced-motion: reduce) { .panel.anim { transition: none; } .disc .dchev { transition: none; } }
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) { .panel.anim { transition: none; } .disc .dchev { transition: none; } .grab .gchev { animation: none !important; transition: none; } }
 </style>
 </head>
 <body>
@@ -447,7 +461,7 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   </div>
 
   <aside class="panel" id="panel" aria-label="Guided tour" data-sheet="peek">
-    <button type="button" class="grab" id="grab" aria-label="Show more of the tour" aria-expanded="false"><span></span></button>
+    <button type="button" class="grab" id="grab" aria-label="Show more of the tour" aria-expanded="false"><span class="gpill"><svg class="gchev" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg><span class="glbl">Swipe up for details</span></span></button>
     <div class="stretchbar" id="stretchbar" role="group" aria-label="Choose a stretch"></div>
     <nav class="tour" id="tour" aria-label="Tour stops"></nav>
     <div class="content" id="content" aria-live="polite"></div>
