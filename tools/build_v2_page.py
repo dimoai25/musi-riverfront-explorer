@@ -2,6 +2,9 @@
 import sys, json
 app, data, out_a, out_s, url = sys.argv[1:6]
 css = open(f'{app}/base.css', encoding='utf-8').read() + open(f'{app}/extra.css', encoding='utf-8').read()
+import os
+if os.path.exists(f'{app}/mobile.css'):
+    css += open(f'{app}/mobile.css', encoding='utf-8').read()
 body = open(f'{app}/body.html', encoding='utf-8').read()
 D = json.load(open(data, encoding='utf-8'))
 body = body.replace('/*DATA*/null', json.dumps(D, ensure_ascii=False, separators=(',', ':')))

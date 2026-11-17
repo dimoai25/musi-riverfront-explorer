@@ -279,6 +279,103 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
 @media (prefers-reduced-motion: reduce) { .layers .chev { transition: none; } }
 /* phones: keep the swipe labels clear of the mode badge */
 @media (max-width: 600px) { .swipe .lbl { top: calc(var(--dh, 36px) + 44px); } }
+
+/* ===== Round 3: header info button, map bar, slim disclaimer, drag hint, about dialog, phone bottom sheet ===== */
+.topctl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.infobtn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--river); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.infobtn svg { width: 20px; height: 20px; }
+.mapbar, .grab, .disc .short, .disc .dchev, .basetoggle { display: none; }
+
+/* drag hint next to the compare handle */
+.swipe .hint { position: absolute; left: 30px; top: calc(80% - 15px); white-space: nowrap; background: var(--ink); color: var(--surface); font: 650 13px/1 var(--f-body); padding: 8px 11px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.swipe .hint::before { content: ""; position: absolute; left: -5px; top: 50%; margin-top: -5px; border: 5px solid transparent; border-left: 0; border-right-color: var(--ink); }
+.swipe .hint.show { opacity: 1; }
+
+/* about dialog */
+.about { border: 0; padding: 0; border-radius: 14px; max-width: min(520px, calc(100vw - 32px)); width: 100%; background: var(--surface); color: var(--ink); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+.about::backdrop { background: rgba(8, 14, 16, .55); }
+.aboutin { padding: 18px 20px 20px; display: grid; gap: 10px; font-size: 15px; line-height: 1.45; max-height: calc(100dvh - 64px); overflow-y: auto; }
+.abouthead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.about h2 { margin: 0; font: 750 20px/1.2 var(--f-display); }
+.about h3 { margin: 6px 0 0; font: 650 13px/1.2 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.about p, .about ul { margin: 0; }
+.about ul { padding-left: 18px; display: grid; gap: 6px; }
+.about a { color: var(--river); font-weight: 600; }
+.aboutx { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); font-size: 24px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+.aboutdisc { background: #ffb020; color: #2a1d00; border-radius: 10px; padding: 10px 12px; }
+.aboutsmall { font-size: 13px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { .swipe .hint { transition: none; } }
+
+/* ----- phones and small tablets: full-screen map, controls on the map, tour in a bottom sheet ----- */
+@media (max-width: 860px) {
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { display: block; }
+  .top { position: fixed; z-index: 30; top: 0; left: 0; right: 0; flex-wrap: nowrap; gap: 10px; box-sizing: border-box; height: calc(52px + env(safe-area-inset-top, 0px)); padding-block: env(safe-area-inset-top, 0px) 0; background: var(--surface); }
+  .top .eyebrow { display: none; }
+  .top h1 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-wrap: nowrap; }
+  .top .brand { flex: 1; }
+  .topctl .seg { display: none !important; }
+  .banner { display: none; }
+  .app { display: block; }
+  .mapwrap { position: fixed; z-index: 1; left: 0; right: 0; bottom: 0; top: calc(52px + env(safe-area-inset-top, 0px)); height: auto; min-height: 0; }
+
+  /* disclaimer: full at first, then one amber line; tap to expand */
+  .disc { cursor: pointer; align-items: center; font-size: 12.5px; line-height: 1.35; padding: 7px 12px; -webkit-tap-highlight-color: transparent; }
+  .disc .dchev { display: block; flex: none; width: 16px; height: 16px; margin-left: auto; transform: rotate(180deg); transition: transform .2s; }
+  .disc.slim { padding-block: 5px; }
+  .disc.slim .long { display: none; }
+  .disc.slim .short { display: block; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .disc.slim .dchev { transform: none; }
+
+  /* map bar: view switch and base toggle sit on the map, under the disclaimer */
+  .mapbar { display: flex; position: absolute; z-index: 6; left: 10px; right: 10px; top: calc(var(--dh, 36px) + 8px); gap: 8px; align-items: center; justify-content: space-between; pointer-events: none; }
+  .mapbar > * { pointer-events: auto; }
+  .mapbar .seg { background: var(--surface); box-shadow: 0 1px 6px rgba(0,0,0,.18); }
+  .mapbar .seg button { padding: 8px 11px; font-size: 13.5px; min-height: 38px; }
+  .has-sat .mapbar .basetoggle { display: inline-flex; }
+  .basetoggle { align-items: center; gap: 6px; min-height: 38px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 650 13px/1 var(--f-body); box-shadow: 0 1px 6px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; }
+  .basetoggle svg { width: 16px; height: 16px; color: var(--river); }
+  .modebadge { display: none; }
+  .ctrls { top: calc(var(--dh, 36px) + 92px); right: 10px; }
+  .ctrls button { width: 40px; height: 40px; }
+  .swipe .lbl { top: calc(var(--dh, 36px) + 58px); }
+  .swipe .l { right: 8px; } .swipe .r { left: 8px; }
+  /* handle sits in the middle of the visible map, above the sheet */
+  .swipe button, .swipe .hint { top: calc(var(--dh, 36px) + 50px + (100% - var(--dh, 36px) - 50px - var(--sheet-h, 0px)) * .5); }
+  .swipe .hint { margin-top: -66px; left: 0; transform: translateX(-50%); }
+  .swipe .hint::before { left: 50%; top: auto; bottom: -5px; margin: 0 0 0 -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
+  .layers { left: 10px; bottom: calc(var(--sheet-h, 0px) + 10px); max-height: calc(100% - var(--sheet-h, 0px) - var(--dh, 36px) - 70px); overflow-y: auto; }
+  .mapwrap .maplibregl-ctrl-bottom-right { bottom: var(--sheet-h, 0px); }
+
+  /* the tour as a bottom sheet */
+  .panel { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; height: 270px; border: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 22px rgba(0,0,0,.22); overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .panel.anim { transition: height .25s ease; }
+  .grab { display: flex; flex: none; justify-content: center; align-items: center; height: 24px; width: 100%; border: 0; background: transparent; cursor: grab; touch-action: none; padding: 0; -webkit-tap-highlight-color: transparent; }
+  .grab span { width: 40px; height: 5px; border-radius: 3px; background: var(--line); }
+  .grab:focus-visible span { background: var(--river); }
+  .stretchbar { padding: 0 12px; gap: 5px; }
+  .stretchbar button { padding: 5px 7px; }
+  .stretchbar button small { font-size: 9.5px; }
+  .stretchbar button span { font-size: 12px; }
+  .tour { padding: 8px 12px; }
+  .tour button { height: 30px; min-width: 30px; }
+  .content { overflow-y: auto; overscroll-behavior: contain; padding: 12px 16px 16px; gap: 12px; }
+  .content h2 { font-size: 19px; }
+  .panel[data-sheet="peek"] .content { overflow: hidden; cursor: pointer; padding-top: 8px; }
+  .panel[data-sheet="peek"] .tour, .panel[data-sheet="peek"] .content .eyebrow { display: none; }
+  .panel[data-sheet="peek"] .stretchbar button small { display: none; }
+  .nav { padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)); background: var(--surface); }
+  .nav button { min-height: 40px; }
+}
+@media (max-width: 374px) {
+  .mapbar { gap: 6px; left: 8px; right: 8px; }
+  .mapbar .seg button { padding: 7px 8px; font-size: 12.5px; }
+  .basetoggle { padding: 0 9px; }
+  .basetoggle span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .top h1 { font-size: 15.5px; }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) { .panel.anim { transition: none; } .disc .dchev { transition: none; } }
 </style>
 </head>
 <body>
@@ -289,7 +386,7 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     <div class="eyebrow">Musi Riverfront · Phase 1, Zone 1A and 1B · read from the tender drawings</div>
     <h1>Musi Riverfront: what the plan shows</h1>
   </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
+  <div class="topctl" id="topctl">
     <div class="seg basebar" role="group" aria-label="Base map">
       <button type="button" id="b-plan" data-b="plan" aria-pressed="true">Survey map</button>
       <button type="button" id="b-sat" data-b="sat" aria-pressed="false">Satellite</button>
@@ -299,6 +396,7 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
       <button type="button" id="m-compare" data-m="compare" aria-pressed="true">Compare</button>
       <button type="button" id="m-prop" data-m="proposed" aria-pressed="false">Proposed</button>
     </div>
+    <button type="button" class="infobtn" id="infoBtn" aria-haspopup="dialog" aria-label="About this map and how to read it"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg></button>
   </div>
 </header>
 <p class="banner">My reading of the public tender drawings (master plan Rev R02, Sep 2026). Indicative and tentative, not official, and not investment advice. Made by <a href="https://x.com/Vamsidhar_t" target="_blank" rel="noopener" style="color:var(--river);font-weight:600">@Vamsidhar_t</a>. Spotted something wrong? Tell me there.</p>
@@ -310,8 +408,16 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
       <div class="mapB" id="mapB"></div>
       <p class="nomap-msg">The map could not load. The tour on the right still works.</p>
     </div>
-    <div class="disc" role="note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3z" fill="currentColor"/><path d="M12 10v5M12 18v.01" stroke="#ffc83d" stroke-width="2.4" stroke-linecap="round"/></svg><span><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition.<span class="satnote"> On satellite, the plan can sit 10–30 m off.</span></span></div>
-    <div class="swipe" id="swipe"><span class="lbl l" id="lblL">Today</span><span class="lbl r">Proposed</span><button type="button" id="swipeBtn" aria-label="Drag to compare today and proposed"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></button></div>
+    <div class="disc" role="note"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3z" fill="currentColor"/><path d="M12 10v5M12 18v.01" stroke="#ffc83d" stroke-width="2.4" stroke-linecap="round"/></svg><span class="long"><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition.<span class="satnote"> On satellite, the plan can sit 10–30 m off.</span></span><span class="short" aria-hidden="true"><b>Approximate overlay.</b> Not for property decisions.</span><svg class="dchev" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
+    <div class="mapbar" id="mapbar">
+      <div class="seg" role="group" aria-label="Map view">
+        <button type="button" data-m="today" aria-pressed="false">Today</button>
+        <button type="button" data-m="compare" aria-pressed="true">Compare</button>
+        <button type="button" data-m="proposed" aria-pressed="false">Proposed</button>
+      </div>
+      <button type="button" class="basetoggle" id="baseToggle"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3 2 8l10 5 10-5-10-5zM2 13l10 5 10-5"/></svg><span id="baseToggleTxt">Survey map</span></button>
+    </div>
+    <div class="swipe" id="swipe"><span class="hint" id="hint" aria-hidden="true">Drag to compare</span><span class="lbl l" id="lblL">Today</span><span class="lbl r">Proposed</span><button type="button" id="swipeBtn" aria-label="Drag to compare today and proposed"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg></button></div>
     <div class="modebadge" id="badge">Compare · drag the handle</div>
     <div class="ctrls">
       <button type="button" id="zin" aria-label="Zoom in">+</button>
@@ -340,13 +446,30 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     </details>
   </div>
 
-  <aside class="panel" aria-label="Guided tour">
+  <aside class="panel" id="panel" aria-label="Guided tour" data-sheet="peek">
+    <button type="button" class="grab" id="grab" aria-label="Show more of the tour" aria-expanded="false"><span></span></button>
     <div class="stretchbar" id="stretchbar" role="group" aria-label="Choose a stretch"></div>
     <nav class="tour" id="tour" aria-label="Tour stops"></nav>
     <div class="content" id="content" aria-live="polite"></div>
     <div class="nav"><button type="button" id="prev">Previous</button><button type="button" id="next" class="primary">Next stop</button></div>
   </aside>
 </main>
+
+<dialog class="about" id="about" aria-labelledby="aboutTitle">
+  <div class="aboutin">
+    <div class="abouthead"><h2 id="aboutTitle">About this map</h2><button type="button" class="aboutx" id="aboutClose" aria-label="Close">×</button></div>
+    <p class="aboutdisc"><b>Approximate overlay based on public plans.</b> Not for judging impact on any specific property or land acquisition. On satellite, the plan can sit 10–30 m off.</p>
+    <p>My reading of the public tender drawings (master plan Rev R02, Sep 2026). Indicative and tentative, not official, and not investment advice. Made by <a href="https://x.com/Vamsidhar_t" target="_blank" rel="noopener">@Vamsidhar_t</a>. Spotted something wrong? Tell me there.</p>
+    <h3>How to read it</h3>
+    <ul>
+      <li><b>Compare:</b> drag the round handle. Left is the ground today, right is the plan.</li>
+      <li><b>Satellite / Survey map:</b> the button on the map switches the base.</li>
+      <li><b>Tour:</b> pull the panel at the bottom up to read each stop; tap a numbered pin to jump to it.</li>
+    </ul>
+    <p class="aboutsmall"><button type="button" class="linkbtn" id="aboutDocs">See the tender documents I used</button></p>
+    <p class="aboutsmall">This page counts anonymous visits and which stops people open, to see what is useful. No cookies, no names, no tracking across other sites.</p>
+  </div>
+</dialog>
 
 <script>
 (function () {
@@ -435,6 +558,9 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function vw() { return viewer.clientWidth; }
+  var PHONE = window.matchMedia("(max-width: 860px)");
+  function isPhone() { return PHONE.matches; }
+  function sheetVisible() { return isPhone() ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sheet-h")) || 0) : 0; }
 
   // ----- georeference: frame points (master plan sheet 1 minus 30,420) -> lng/lat -----
   var G = null, TJ = null, CFG = null, mapA = null, mapB = null, pendingBox = null;
@@ -517,17 +643,18 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     mapB.setMinZoom(mapB.getZoom() - 0.6);
     function sync() { mapA.jumpTo({ center: mapB.getCenter(), zoom: mapB.getZoom(), bearing: 0, pitch: 0 }); updateZoomClass(); }
     mapB.on("move", sync); sync();
-    mapB.on("click", function () { var L = document.getElementById("layers"); if (L.open && window.matchMedia("(max-width: 860px)").matches) L.open = false; });
-    mapB.on("moveend", function (e) { if (e.originalEvent) { A.once("map_moved"); A.zoom(mapB.getZoom()); } });
+    mapB.on("click", function () { if (!isPhone()) return; var L = document.getElementById("layers"); if (L.open) L.open = false; else if (sheetState !== "peek") setSheet("peek"); });
+    mapB.on("moveend", function (e) { if (e.originalEvent) { A.once("map_moved"); A.zoom(mapB.getZoom()); if (isPhone() && !disc.classList.contains("slim")) scheduleSlim(600); } });
     markers.forEach(function (m) { new maplibregl.Marker({ element: m[0], anchor: "center" }).setLngLat(ptToLL(m[1], m[2])).addTo(mapB); });
     mapB.on("load", function () { applyBase(); });
-    viewer.classList.add("ready");
+    viewer.classList.add("ready"); scheduleSlim(4500);
     if (CFG) {
-      document.querySelector(".top").classList.add("has-sat");
-      if (location.hash === "#sat") setBase("sat");
+      document.querySelector(".top").classList.add("has-sat"); document.documentElement.classList.add("has-sat");
+      if (!/[?&]base=map\b/.test(location.search)) setBase("sat");
     }
     updateSwipe();
     if (pendingBox) { fitBox(pendingBox, false); pendingBox = null; }
+    mapB.once("idle", nudgeOnce);
   }
   function updateZoomClass() {
     var m = mPerPx(mapB.getZoom());
@@ -535,8 +662,13 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   }
   function fitBox(b, animate) {
     if (!mapB) { pendingBox = b; return; }
-    var narrow = vw() < 500;
-    mapB.fitBounds(boxBounds(b), { padding: { top: narrow ? 70 : 56, bottom: 24, left: 24, right: narrow ? 24 : 60 }, maxZoom: 16.8,
+    var narrow = vw() < 500, pad;
+    if (isPhone()) {
+      var mb = document.getElementById("mapbar");
+      pad = { top: (parseFloat(getComputedStyle(document.querySelector(".mapwrap")).getPropertyValue("--dh")) || 30) + (mb ? mb.offsetHeight : 40) + 16, bottom: sheetVisible() + 16, left: 20, right: 20 };
+      var vh = viewer.clientHeight; if (pad.top + pad.bottom > vh - 120) pad.bottom = Math.max(16, vh - 120 - pad.top);
+    } else pad = { top: narrow ? 70 : 56, bottom: 24, left: 24, right: narrow ? 24 : 60 };
+    mapB.fitBounds(boxBounds(b), { padding: pad, maxZoom: 16.8,
       duration: animate && !reduceMotion ? 900 : 0 });
   }
   document.getElementById("zin").addEventListener("click", function () { if (mapB) mapB.zoomIn(); });
@@ -556,8 +688,11 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     document.querySelectorAll(".basebar button").forEach(function (x) { x.setAttribute("aria-pressed", String(x.dataset.b === b)); });
     if (mapB && mapB.isStyleLoaded()) applyBase();
     document.getElementById("lblL").textContent = b === "sat" ? "Satellite" : "Today";
+    document.getElementById("baseToggleTxt").textContent = b === "sat" ? "Survey map" : "Satellite";
+    document.getElementById("baseToggle").setAttribute("aria-label", b === "sat" ? "Switch to the survey map" : "Switch to satellite imagery");
     setMode(mode);
   }
+  document.getElementById("baseToggle").addEventListener("click", function () { var to = base === "sat" ? "plan" : "sat"; A.track("base_map", { base: to, from: "map_button" }); setBase(to); });
   document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { A.track("base_map", { base: x.dataset.b }); }); });
   document.querySelectorAll(".basebar button").forEach(function (x) { x.addEventListener("click", function () { setBase(x.dataset.b); }); });
   document.getElementById("opacity").addEventListener("input", function (e) { if (mapB && mapB.getLayer("plan")) mapB.setPaintProperty("plan", "raster-opacity", e.target.value / 100); });
@@ -571,8 +706,25 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
   }
   window.addEventListener("resize", updateSwipe);
   var swipeBtn = document.getElementById("swipeBtn");
+  var hint = document.getElementById("hint"), dragged = false;
+  try { dragged = localStorage.getItem("mx_dragged") === "1"; } catch (e) {}
+  function hideHint() { hint.classList.remove("show"); }
+  function nudgeOnce() {
+    if (mode !== "compare") return;
+    if (!dragged) { hint.classList.add("show"); setTimeout(hideHint, 7000); }
+    if (reduceMotion || dragged) return;
+    var t0 = null, from = swipeFrac, D = 1700;
+    function step(t) {
+      if (dragged) return;
+      if (t0 === null) t0 = t; var k = Math.min(1, (t - t0) / D);
+      swipeFrac = from + 0.2 * Math.sin(k * Math.PI * 2) * (1 - k * 0.3) * (k < 1 ? 1 : 0); updateSwipe();
+      if (k < 1) requestAnimationFrame(step); else { swipeFrac = from; updateSwipe(); }
+    }
+    setTimeout(function () { requestAnimationFrame(step); }, 500);
+  }
   swipeBtn.addEventListener("pointerdown", function (e) {
     A.once("compare_dragged");
+    dragged = true; hideHint(); try { localStorage.setItem("mx_dragged", "1"); } catch (er) {}
     e.preventDefault(); swipeBtn.setPointerCapture(e.pointerId);
     function mv(ev) { var r = viewer.getBoundingClientRect(); swipeFrac = Math.max(0.03, Math.min(0.97, (ev.clientX - r.left) / r.width)); updateSwipe(); }
     function up() { swipeBtn.removeEventListener("pointermove", mv); swipeBtn.removeEventListener("pointerup", up); swipeBtn.removeEventListener("pointercancel", up); }
@@ -686,7 +838,8 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     buildTour();
     STRETCHES.forEach(function (x) { x.btn.setAttribute("aria-pressed", String(!!s.stretch && x.id === activeStretch)); });
     STOPS.forEach(function (t, k) { if (t.tabEl) t.tabEl.setAttribute("aria-current", String(k === i)); if (t.pinEl) t.pinEl.setAttribute("aria-current", String(k === i)); });
-    renderStop(i); fitBox(s.box, true);
+    if (isPhone() && sheetState === "full" && !fromHash) setSheet("half");
+    renderStop(i); if (isPhone() && sheetState === "peek") setSheet("peek", false); fitBox(s.box, true);
     // phones: the map sits above the text, so bring it back into view when moving between stops
     if (!fromHash && window.matchMedia("(max-width: 860px)").matches) {
       var mw = document.querySelector(".mapwrap"), r = mw.getBoundingClientRect();
@@ -707,11 +860,71 @@ h1 { margin: 0; font: 750 clamp(20px, 2.6vw, 26px)/1.15 var(--f-display); letter
     if (e.target.closest && e.target.closest("input, textarea, #viewer, #swipeBtn")) return;
     if (e.key === "ArrowRight" || e.key === "PageDown") { go(current + 1); e.preventDefault(); } else if (e.key === "ArrowLeft" || e.key === "PageUp") { go(current - 1); e.preventDefault(); }
   });
+  // ----- phones: disclaimer shrinks to one line after a few seconds (tap to read it in full) -----
+  var disc = document.querySelector(".disc"), slimTimer = null;
+  disc.setAttribute("tabindex", "0"); disc.setAttribute("aria-expanded", "true");
+  function slimDisc(on) { if (!isPhone()) on = false; disc.classList.toggle("slim", on); disc.setAttribute("aria-expanded", String(!on)); }
+  function scheduleSlim(ms) { clearTimeout(slimTimer); slimTimer = setTimeout(function () { slimDisc(true); }, ms); }
+  // the timer starts once the map is on screen (see initMaps), so people see the full note with the map
+  function toggleDisc() { if (!isPhone()) return; var expand = disc.classList.contains("slim"); slimDisc(!expand); if (expand) { A.track("disclaimer_expanded"); scheduleSlim(10000); } }
+  disc.addEventListener("click", toggleDisc);
+  disc.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleDisc(); } });
+
+  // ----- phones: the tour is a bottom sheet (peek / half / full) over a full-screen map -----
+  var panel = document.getElementById("panel"), grab = document.getElementById("grab"), sheetState = "peek";
+  function sheetHeights() {
+    var vh = window.innerHeight, top = document.querySelector(".top").offsetHeight;
+    var fixed = grab.offsetHeight + document.getElementById("stretchbar").offsetHeight + tour.offsetHeight + document.querySelector(".panel .nav").offsetHeight;
+    var t = content.querySelector("h2"), titleH = t ? t.offsetHeight + 20 : 52;
+    return { peek: Math.min(Math.round(vh * 0.4), fixed + Math.max(46, Math.min(titleH, 80))), half: Math.round(vh * 0.55), full: vh - top - 8 };
+  }
+  function applySheet(px, animate) {
+    panel.classList.toggle("anim", !!animate);
+    panel.style.height = px + "px";
+    document.documentElement.style.setProperty("--sheet-h", px + "px");
+  }
+  function setSheet(st, animate) {
+    if (!isPhone()) { panel.style.height = ""; document.documentElement.style.setProperty("--sheet-h", "0px"); return; }
+    var changed = st !== sheetState; sheetState = st; panel.dataset.sheet = st;
+    if (st !== "peek") hideHint();
+    grab.setAttribute("aria-expanded", String(st !== "peek")); grab.setAttribute("aria-label", st === "peek" ? "Show more of the tour" : "Show less of the tour");
+    applySheet(sheetHeights()[st], animate !== false);
+    if (changed) A.track("sheet_resized", { to: st });
+  }
+  var drag = null;
+  grab.addEventListener("pointerdown", function (e) { if (!isPhone()) return; drag = { y: e.clientY, h: panel.offsetHeight, moved: false }; grab.setPointerCapture(e.pointerId); });
+  grab.addEventListener("pointermove", function (e) {
+    if (!drag) return; var dy = e.clientY - drag.y; if (Math.abs(dy) > 6) drag.moved = true;
+    if (drag.moved) { var H = sheetHeights(); applySheet(Math.max(H.peek - 40, Math.min(H.full, drag.h - dy)), false); }
+  });
+  function endDrag(e) {
+    if (!drag) return; var d = drag; drag = null;
+    if (!d.moved) { setSheet(sheetState === "peek" ? "half" : "peek"); return; }
+    var h = panel.offsetHeight, H = sheetHeights(), best = "peek";
+    ["peek", "half", "full"].forEach(function (k) { if (Math.abs(H[k] - h) < Math.abs(H[best] - h)) best = k; });
+    var dy = e.clientY - d.y; if (best === sheetState && Math.abs(dy) > 40) best = dy < 0 ? (sheetState === "peek" ? "half" : "full") : (sheetState === "full" ? "half" : "peek");
+    setSheet(best);
+  }
+  grab.addEventListener("pointerup", endDrag); grab.addEventListener("pointercancel", endDrag);
+  content.addEventListener("click", function (e) { if (isPhone() && sheetState === "peek" && !(e.target.closest && e.target.closest("a, button"))) setSheet("half"); });
+  function relayout() { if (isPhone()) setSheet(sheetState, false); else setSheet("peek", false); slimDisc(isPhone() && disc.classList.contains("slim")); updateSwipe(); }
+  window.addEventListener("resize", relayout);
+  if (PHONE.addEventListener) PHONE.addEventListener("change", relayout);
+  requestAnimationFrame(function () { setSheet("peek", false); });
+
+  // ----- about dialog -----
+  var about = document.getElementById("about");
+  document.getElementById("infoBtn").addEventListener("click", function () { A.track("info_opened"); if (about.showModal) about.showModal(); else about.setAttribute("open", ""); });
+  document.getElementById("aboutClose").addEventListener("click", function () { about.close ? about.close() : about.removeAttribute("open"); });
+  about.addEventListener("click", function (e) { if (e.target === about) about.close(); });
+  document.getElementById("aboutDocs").addEventListener("click", function () { about.close ? about.close() : about.removeAttribute("open"); go(DOCS_I, false, "about"); if (isPhone()) setSheet("full"); });
+
   var ALIAS = { feasibility: "overview" };
   function fromHash() {
     var h = (location.hash || "").slice(1); h = ALIAS[h] || h;
     var i = STOPS.findIndex(function (s) { return s.id === h; });
-    go(i >= 0 ? i : 0, true);
+    if (i < 0) i = Math.max(0, STOPS.findIndex(function (s) { return s.id === "west"; }));
+    go(i, true);
   }
   window.addEventListener("hashchange", fromHash);
   setMode("compare");

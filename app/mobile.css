@@ -1,0 +1,97 @@
+
+/* ===== Round 3: header info button, map bar, slim disclaimer, drag hint, about dialog, phone bottom sheet ===== */
+.topctl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.infobtn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--river); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.infobtn svg { width: 20px; height: 20px; }
+.mapbar, .grab, .disc .short, .disc .dchev, .basetoggle { display: none; }
+
+/* drag hint next to the compare handle */
+.swipe .hint { position: absolute; left: 30px; top: calc(80% - 15px); white-space: nowrap; background: var(--ink); color: var(--surface); font: 650 13px/1 var(--f-body); padding: 8px 11px; border-radius: 999px; box-shadow: 0 2px 8px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .3s; }
+.swipe .hint::before { content: ""; position: absolute; left: -5px; top: 50%; margin-top: -5px; border: 5px solid transparent; border-left: 0; border-right-color: var(--ink); }
+.swipe .hint.show { opacity: 1; }
+
+/* about dialog */
+.about { border: 0; padding: 0; border-radius: 14px; max-width: min(520px, calc(100vw - 32px)); width: 100%; background: var(--surface); color: var(--ink); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+.about::backdrop { background: rgba(8, 14, 16, .55); }
+.aboutin { padding: 18px 20px 20px; display: grid; gap: 10px; font-size: 15px; line-height: 1.45; max-height: calc(100dvh - 64px); overflow-y: auto; }
+.abouthead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.about h2 { margin: 0; font: 750 20px/1.2 var(--f-display); }
+.about h3 { margin: 6px 0 0; font: 650 13px/1.2 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.about p, .about ul { margin: 0; }
+.about ul { padding-left: 18px; display: grid; gap: 6px; }
+.about a { color: var(--river); font-weight: 600; }
+.aboutx { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); font-size: 24px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+.aboutdisc { background: #ffb020; color: #2a1d00; border-radius: 10px; padding: 10px 12px; }
+.aboutsmall { font-size: 13px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) { .swipe .hint { transition: none; } }
+
+/* ----- phones and small tablets: full-screen map, controls on the map, tour in a bottom sheet ----- */
+@media (max-width: 860px) {
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { display: block; }
+  .top { position: fixed; z-index: 30; top: 0; left: 0; right: 0; flex-wrap: nowrap; gap: 10px; box-sizing: border-box; height: calc(52px + env(safe-area-inset-top, 0px)); padding-block: env(safe-area-inset-top, 0px) 0; background: var(--surface); }
+  .top .eyebrow { display: none; }
+  .top h1 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-wrap: nowrap; }
+  .top .brand { flex: 1; }
+  .topctl .seg { display: none !important; }
+  .banner { display: none; }
+  .app { display: block; }
+  .mapwrap { position: fixed; z-index: 1; left: 0; right: 0; bottom: 0; top: calc(52px + env(safe-area-inset-top, 0px)); height: auto; min-height: 0; }
+
+  /* disclaimer: full at first, then one amber line; tap to expand */
+  .disc { cursor: pointer; align-items: center; font-size: 12.5px; line-height: 1.35; padding: 7px 12px; -webkit-tap-highlight-color: transparent; }
+  .disc .dchev { display: block; flex: none; width: 16px; height: 16px; margin-left: auto; transform: rotate(180deg); transition: transform .2s; }
+  .disc.slim { padding-block: 5px; }
+  .disc.slim .long { display: none; }
+  .disc.slim .short { display: block; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .disc.slim .dchev { transform: none; }
+
+  /* map bar: view switch and base toggle sit on the map, under the disclaimer */
+  .mapbar { display: flex; position: absolute; z-index: 6; left: 10px; right: 10px; top: calc(var(--dh, 36px) + 8px); gap: 8px; align-items: center; justify-content: space-between; pointer-events: none; }
+  .mapbar > * { pointer-events: auto; }
+  .mapbar .seg { background: var(--surface); box-shadow: 0 1px 6px rgba(0,0,0,.18); }
+  .mapbar .seg button { padding: 8px 11px; font-size: 13.5px; min-height: 38px; }
+  .has-sat .mapbar .basetoggle { display: inline-flex; }
+  .basetoggle { align-items: center; gap: 6px; min-height: 38px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 650 13px/1 var(--f-body); box-shadow: 0 1px 6px rgba(0,0,0,.18); cursor: pointer; white-space: nowrap; }
+  .basetoggle svg { width: 16px; height: 16px; color: var(--river); }
+  .modebadge { display: none; }
+  .ctrls { top: calc(var(--dh, 36px) + 92px); right: 10px; }
+  .ctrls button { width: 40px; height: 40px; }
+  .swipe .lbl { top: calc(var(--dh, 36px) + 58px); }
+  .swipe .l { right: 8px; } .swipe .r { left: 8px; }
+  /* handle sits in the middle of the visible map, above the sheet */
+  .swipe button, .swipe .hint { top: calc(var(--dh, 36px) + 50px + (100% - var(--dh, 36px) - 50px - var(--sheet-h, 0px)) * .5); }
+  .swipe .hint { margin-top: -66px; left: 0; transform: translateX(-50%); }
+  .swipe .hint::before { left: 50%; top: auto; bottom: -5px; margin: 0 0 0 -5px; border: 5px solid transparent; border-bottom: 0; border-top-color: var(--ink); }
+  .layers { left: 10px; bottom: calc(var(--sheet-h, 0px) + 10px); max-height: calc(100% - var(--sheet-h, 0px) - var(--dh, 36px) - 70px); overflow-y: auto; }
+  .mapwrap .maplibregl-ctrl-bottom-right { bottom: var(--sheet-h, 0px); }
+
+  /* the tour as a bottom sheet */
+  .panel { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; height: 270px; border: 0; border-radius: 16px 16px 0 0; box-shadow: 0 -4px 22px rgba(0,0,0,.22); overflow: hidden; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .panel.anim { transition: height .25s ease; }
+  .grab { display: flex; flex: none; justify-content: center; align-items: center; height: 24px; width: 100%; border: 0; background: transparent; cursor: grab; touch-action: none; padding: 0; -webkit-tap-highlight-color: transparent; }
+  .grab span { width: 40px; height: 5px; border-radius: 3px; background: var(--line); }
+  .grab:focus-visible span { background: var(--river); }
+  .stretchbar { padding: 0 12px; gap: 5px; }
+  .stretchbar button { padding: 5px 7px; }
+  .stretchbar button small { font-size: 9.5px; }
+  .stretchbar button span { font-size: 12px; }
+  .tour { padding: 8px 12px; }
+  .tour button { height: 30px; min-width: 30px; }
+  .content { overflow-y: auto; overscroll-behavior: contain; padding: 12px 16px 16px; gap: 12px; }
+  .content h2 { font-size: 19px; }
+  .panel[data-sheet="peek"] .content { overflow: hidden; cursor: pointer; padding-top: 8px; }
+  .panel[data-sheet="peek"] .tour, .panel[data-sheet="peek"] .content .eyebrow { display: none; }
+  .panel[data-sheet="peek"] .stretchbar button small { display: none; }
+  .nav { padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom, 0px)); background: var(--surface); }
+  .nav button { min-height: 40px; }
+}
+@media (max-width: 374px) {
+  .mapbar { gap: 6px; left: 8px; right: 8px; }
+  .mapbar .seg button { padding: 7px 8px; font-size: 12.5px; }
+  .basetoggle { padding: 0 9px; }
+  .basetoggle span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .top h1 { font-size: 15.5px; }
+}
+@media (max-width: 860px) and (prefers-reduced-motion: reduce) { .panel.anim { transition: none; } .disc .dchev { transition: none; } }

@@ -8,6 +8,9 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
 
 ## Guardrails (do not break)
 - **Permanent note on the map.** It must always be visible: "Approximate overlay based on public plans. Not for judging impact on any specific property or land acquisition."
+  - On desktop it shows in full at all times.
+  - On phones it shows in full for about 4.5 s after the map appears, then shrinks to one amber line ("Approximate overlay. Not for property decisions."). Tapping that line shows the full text again. The full text is also at the top of the About dialog.
+  - The owner approved this on 17 Nov 2026. Never hide it completely.
 - **No builder or project names**, on the map, in the copy, or anywhere in this repo (it is public). Gated-community names printed on the drawing have been removed from the plan image, the text and the committed data. The design reports name some bridges after them; we use neutral names instead (bend bridge, Ibrahimbagh bridge, Goshala bridge). `tools/build_v2_data.py` refuses output containing them, checked by hashed word so the names never appear in code.
 - **No completion dates or timelines.** The drawing revision line ("Rev R02, Sep 2026") is fine.
 - **List the source document for each stretch.** This is in `data/data.json` → `SOURCES`, shown in each stretch intro and in the Documents tab.
@@ -21,7 +24,8 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
   - Zone 1A: Himayat Sagar → Bapu Ghat, Ch 1+200 → 9+140, including the Rajendranagar Road / Agriculture University nala area.
   - Today / Compare / Proposed swipe, stretch switcher, 16 stops, sources per stretch.
 - **Georeferenced (15 Nov 2026):** affine fit from the owner's 10 Google Maps points, RMS 13 m. The worst point is cp7 (the roundabout, 26 m). The owner re-clicked its centre and it moved only 4 m, so the gap is between the drawing and the imagery, not the click.
-- **MapLibre version** (below) replaces the v2 engine once tested. Satellite turns on when the `ARCGIS_KEY` repo secret is set.
+- **MapLibre version** (below) is live, with satellite from the `ARCGIS_KEY` repo secret and analytics from `POSTHOG_KEY`.
+- **Phone-first layout (17 Nov 2026):** see below. It was built from the PostHog numbers: about 93% of visitors are on phones, and only 16% found the satellite toggle.
 
 ## MapLibre version
 - **Same page, new map engine.** `app/body.html` keeps the v2 panel, tour, stretches and markers. The map is MapLibre GL JS 5.6.0, self-hosted in `site/vendor/` (npm and the CDNs are blocked from the build sandbox; the release zip comes from GitHub).
@@ -36,6 +40,25 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
 - **Build the tiles:** `sh tools/make_xyz.sh`. It runs `tools/georef.py` (fit, RMS and leave-one-out errors per point), then `tools/warp_tiles.py` per layer. The warper reads the v2 bundles in `site/tiles/`, so the repo alone is enough. It takes about 7 minutes per layer.
 - **Never commit a made-up georef.** Testing uses synthetic points in the scratchpad only.
 
+## Phone layout (≤860 px, `app/mobile.css`)
+- **Full-screen map.**
+  - A slim fixed top bar holds the title and an (i) button that opens the About dialog.
+  - The brown "my reading" banner lives in the About dialog on phones.
+- **On the map:**
+  - the disclaimer line;
+  - the map bar: Today / Compare / Proposed, plus a Satellite / Survey map toggle that names the base you would switch to;
+  - the zoom buttons and the layers panel.
+- **The tour is a bottom sheet** (`#panel`, `data-sheet` = peek / half / full).
+  - Drag or tap the grab handle to resize it.
+  - Tapping the map returns it to peek.
+  - `--sheet-h` holds its height, so the compare handle, layers panel, credits and stop fitting stay above it.
+- **Default view, every device:**
+  - the Gandipet to Narsingi stretch intro (`#west`);
+  - Satellite if imagery is configured (`?base=map` opens on the survey map);
+  - Compare mode.
+  - On first visit the handle nudges once and shows a "Drag to compare" hint until the visitor drags it.
+- **Tests:** `full_test2.js` (in the session scratchpad, not the repo) covers 8 devices with 228 checks.
+
 ## Analytics (PostHog, no library)
 - About 60 lines inline in `app/body.html` (`var A = ...`). They POST to PostHog's `/batch/` endpoint and add no files or cookies. A random id lives in localStorage. The session id (also localStorage) rotates after 30 minutes idle or 24 hours, like posthog-js. `$process_person_profile: false` keeps every visitor anonymous.
 - **On only when** `config.json` has `analytics.key`, written at deploy from the repo secret `POSTHOG_KEY`. The host comes from the repo variable `POSTHOG_HOST`, default `https://us.i.posthog.com`.
@@ -45,6 +68,8 @@ The backlog is `BACKLOG.md`. Check it at the start of a session and tick items a
   - `stop_viewed` (stop, stretch, kind, via: tap / prev / next / map_pin / stretch_bar / link).
   - `view_mode`, `base_map`, `layer_toggled`, `link_clicked`.
   - `map_moved` and `compare_dragged`, once per page.
+  - Phones: `sheet_resized` (to), `disclaimer_expanded`. All devices: `info_opened`.
+  - `base_map` from the phone map button also carries `from: map_button`.
 - Every event also carries `utm_*`, `$referring_domain` and `in_app` (X / WhatsApp / Instagram webviews).
 
 ## Coordinate frame

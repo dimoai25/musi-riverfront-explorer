@@ -19,7 +19,15 @@ Tick an item when it ships, and add a line on what changed.
   - The disclaimer was checked in dark mode: the amber stays readable.
   - On phones, Next and Previous bring the map back into view, so you see it move to the stop. Before, you stayed scrolled down at the text.
   - The map credits start collapsed to the (i) button, so they no longer cover the layers button on phones.
-- [ ] **UI/UX pass 2:** collect new items here.
+- [x] **UI/UX pass 2: phone-first layout** (shipped 17 Nov 2026):
+  - Full-screen map with a slim top bar and an About dialog.
+  - Today / Compare / Proposed and the Satellite toggle sit on the map.
+  - The tour moved into a bottom sheet.
+  - The disclaimer shows in full, then shrinks to one line (tap it to expand).
+  - Opens on Satellite + Compare on Gandipet to Narsingi, with a one-time drag hint.
+- [ ] **UI/UX pass 3:** collect new items here.
+  - Check the bottom sheet against Safari's floating toolbar on a real iPhone (it can't be emulated here).
+  - Make `?notrack` stick in the owner's browsers.
   - Dark mode: the swipe labels blend into the light map background. Give them a border.
 
 ## When something changes in the project
